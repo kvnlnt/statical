@@ -1,0 +1,15 @@
+{
+  "name": "statical",
+  "version": "1.0.0",
+  "description": "Static site generator boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./bin/dev.js",
+    "test": "./bin/test.sh"
+  },
+  "author": "Kevin Lint",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.7.6"
+  }
+}
