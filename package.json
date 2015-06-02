@@ -10,6 +10,8 @@
   "author": "Kevin Lint",
   "license": "ISC",
   "dependencies": {
-    "browser-sync": "^2.7.6"
+    "browser-sync": "^2.7.6",
+    "fs": "0.0.2",
+    "uglify-js": "^2.4.23"
   }
 }
