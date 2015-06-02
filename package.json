@@ -1,21 +1,36 @@
 {
-  "name": "statical",
-  "version": "1.0.0",
-  "description": "Static site generator boilerplate",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node ./bin/dev.js",
-    "test": "./bin/test.sh"
-  },
-  "author": "Kevin Lint",
-  "license": "ISC",
-  "dependencies": {
-    "async": "^1.1.0",
-    "browser-sync": "^2.7.6",
-    "front-matter": "^1.0.0",
-    "fs": "0.0.2",
-    "swig": "^1.4.2",
-    "uglify-js": "^2.4.23",
-    "uglifycss": "0.0.15"
-  }
+    "name": "statical",
+    "version": "1.0.0",
+    "description": "Static site generator boilerplate",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node ./bin/dev.js",
+        "test": "./bin/test.sh"
+    },
+    "author": "Kevin Lint",
+    "license": "ISC",
+    "dependencies": {
+        "browser-sync": "^2.7.6",
+        "front-matter": "^1.0.0",
+        "fs": "0.0.2",
+        "swig": "^1.4.2",
+        "uglify-js": "^2.4.23",
+        "uglifycss": "0.0.15"
+    },
+    "config": {
+        "js": {
+            "files": ["./src/scripts/app.js", "./src/scripts/test.js"],
+            "output": "./build/scripts.js"
+        },
+        "css": {
+            "files": ["./src/styles/app.css", "./src/styles/test.css"],
+            "output": "./build/styles.css"
+        },
+        "html": {
+            "files": [{
+                "html": "./src/html/index.html",
+                "yml": "./src/html/index.yml"
+            }]
+        }
+    }
 }
