@@ -6,9 +6,11 @@ var frontMatter = require('front-matter');
 var fs          = require('fs');
 var packageJson = require('../package.json');
 var swig        = require('swig');
+var del         = require('del');
 
 // configs
 swig.setDefaults({ cache: false });
+
 
 // build javascript
 var buildJs = function() {
@@ -47,21 +49,29 @@ var buildCss = function() {
 var buildHtml = function() {
     // compile all html files
     packageJson.config.html.files.forEach(function(file) {
-        fs.readFile(file.yml, 'utf8', function(err, data) {
+        fs.readFile(file.data, 'utf8', function(err, data) {
             if (err) throw err;
             var yml = frontMatter(data);
-            var html = swig.renderFile(file.path, { data: yml.attributes, content: yml.body });
-            fs.writeFileSync(file.path.replace('./src/html/', './build/'), html);
+            var html = swig.renderFile(file.input, { data: yml.attributes, content: yml.body });
+            fs.writeFileSync(file.output, html);
         });
     });
 
     console.log('BUILD: html');
 };
 
-// build on load
-buildJs();
-buildCss();
-buildHtml();
+// clean build
+var clean = function(){
+    del(['./build/*'], function (err, paths) {
+        console.log('Deleted files/folders:\n', paths.join('\n'));
+        buildJs();
+        buildCss();
+        buildHtml();
+    });
+};
+
+// rebuild on load
+clean();
 
 // watch dev to rebuild files on change
 browserSync.watch("./src/html/**/*.{html,yml}").on("change", buildHtml);
