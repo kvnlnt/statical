@@ -1,2 +1,2 @@
-var test="test",test2="test2";
+var test={};
 //# sourceMappingURL=scripts.js.map
