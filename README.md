@@ -12,11 +12,12 @@ Statical works by treating the content anatomy of a website like that of a russi
 
 ## Structure
 The folder structure looks like this:
-	- property // contains global styles and scripts
-	- pages // contains all pages and their styles and scripts
-	- parts // contains all parts with their styles and scripts
-	- pieces // contains all pieces with their styles and scripts
-	- vendor // contains all vendor styles and scripts
+
+- property // contains global styles and scripts
+- pages // contains all pages and their styles and scripts
+- parts // contains all parts with their styles and scripts
+- pieces // contains all pieces with their styles and scripts
+- vendor // contains all vendor styles and scripts
 
 ## Scopes
 There are four scopes matching each element type. Scopes are accessed inside .jst files via {{@scopename somevariable }}. As different elements include other elements (say a part includes a piece), the scopes are evaluated one at a time as they get "folded" up during compilation (like a russian doll). The four scopes are:
