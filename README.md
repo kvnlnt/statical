@@ -1,5 +1,7 @@
-# Statical
-Statical is a static website generator that uses a few simple concepts to provide powerful functionality. Functionality that is usually reserved for much more complex applications. 
+![Alt text](statical.png)
+
+
+Statical is a static website generator that uses a few simple concepts to provide powerful functionality without a myriad of hacks, dependencies and fyis.
 
 ## Setup
 Clone this repo and:
@@ -13,60 +15,79 @@ Statical works by treating the content anatomy of a website like that of a russi
 ## Structure
 The folder structure looks like this:
 
-- property // contains global styles and scripts
-- pages // contains all pages and their styles and scripts
-- parts // contains all parts with their styles and scripts
-- pieces // contains all pieces with their styles and scripts
-- vendor // contains all vendor styles and scripts
+- bin // scripts
+	- dev.js // the dev/build script
+- build // build code
+- src // source code
+	- property // contains global styles and scripts
+	- pages // contains all pages and their styles and scripts
+	- parts // contains all parts with their styles and scripts
+	- pieces // contains all pieces with their styles and scripts
+	- vendor // contains all vendor styles and scripts
 
 ## Scopes
-There are four scopes matching each element type. Scopes are accessed inside .jst files via {{@scopename somevariable }}. As different elements include other elements (say a part includes a piece), the scopes are evaluated one at a time as they get "folded" up during compilation (like a russian doll). The four scopes are:
+There are four scopes matching each element type. Scopes are accessed inside .jst files via {{@scopename somevariable }}. The four scopes are:
 
 	{{@property ...[variable goes here]... }}
 	{{@page ...[variable goes here]...}}
 	{{@part ...[variable goes here]...}}
 	{{@piece ...[variable goes here]... }}
 
-### An Example
-Clear as mud? Let's try an example. Let's say you have a page called about-us. It's files would look like this:
+## An Example
+Clear as mud? Let's try an example. Let's say you have a page called about-us. It would have two files: a .yml file which will serve as it's configuration/data file and a .jst file which will serve as it's javascript template. They would look like this:
 
-#### ./src/pages/about-us.yml
+### ./src/pages/about-us.yml
 	
 	---
 	title: About Us
 	---
 
-#### ./src/pages/about-us.jst
+### ./src/pages/about-us.jst
 
 	{% include "./src/parts/header.html" %}
 	...A bunch of stuff about us...
 
-This page has a code-behind data file (about-us.yml) with a *title* property. The title is not being output here - although it could be with a <code>{{@page title }}</code>. Instead the page is including a part called page header. Let's take a look at what the header part's files look like:
+This page has a code-behind data file (about-us.yml) with a *title* property. The title is not being output here - although it could be with a <code>{{@page title }}</code>. Instead the page is including a part called *header*. Let's take a look at what the *header* part's files look like:
 
-#### ./src/parts/header.yml
+### ./src/parts/header.yml
 
 	---
 	leadline: This page is called 
 	---
 
-#### ./src/parts/header.jst
+### ./src/parts/header.jst
 
 	{{@part leadline}} {{@page title }}
 
-This would lead to the generation of an *about-us.html* page who's content would look like this:
+Notice the two different scopes? *@part* and *@page*? This would lead to the generation of an *about-us.html* page who's content would look like this:
 
-#### ./src/pages/about-us.html:
+### ./src/pages/about-us.html:
 
 	This page is called About Us
 
-#### Compilation then looks like this:
+So what happened?
 
-- the *header* part evaluated all <code>{{@part ...}}</code> blocks with it's data (coming from it's yml file).
-- the *header* part is then included into the *about-us* page.
-- the *about-us* page then evaluates all the <code>{{@page ...}}</code> blocks with it's data (coming from it's yml file).
+### This is what happened:
 
-#### Make Sense?
-With each tier having contextual variable scope it's easy to compose all the elements within your site powerful ways. Let me know if you start using this tool, I'd love to get some feedback!!!
+- the *header* part *compiled* the <code>{{@part leadline}}</code> block with it's config file and left the <code>{{@page title }}</code> block alone.
+- the compiled *header* part was then included into the *about-us* page.
+- where the *about-us* page compiled the <code>{{@page title}}</code> blocks with it's config file.
 
+## Make sense?
+With this structure, it's easy to *compose* as website with parameterized elements. In the example above the header part could be included into any page, outputting whatever title, etc was specified in the page's relative .yml file.
 
+## Why it should make sense
+- Dev site *is* production. Nobody likes surprises.
+- Build tool agnostic. It neither uses nor precludes one.
+- Minimal dependencies. Only a few dependable node modules using basic features.
+- Minmal complexity. Just understand the hierarchy and you're good to go!
+- Framework agnostic. That's your decision.
+- UI and data are separated. Easily create a blog, dynamically generate a menu or add in I18n features.  
+- UI components are reusuable
+- Naturally extensible:
+	- A pattern library or style guide could easily be created. Drop all your parts on a page.
+	- git offers a natural versioning system
+	- easily intergrate components created in other tools (Sketch for example)
 
+## Thoughts?
+This is an architecture I've been using for over 12 years. It has served me well. With the proliferation of static site generators such as Metalsmith and Jekyll I felt it was time to try my hand at it. If you have any ideas or improvements to Statical, I'd love to hear it. Feel free to make a PR, drop me a line, etc.

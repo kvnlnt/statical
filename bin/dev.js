@@ -52,7 +52,7 @@ var buildJs = function(){
 var buildJsVendor = function(){
     /// concat vendor scripts
     var vendorScripts = property.vendorScripts.map(function(script){
-        return './src/property/' + script;
+        return './src/vendor/' + script;
     });
 
     var js = uglifyJs.minify(vendorScripts);
