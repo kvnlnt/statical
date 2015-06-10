@@ -6,10 +6,10 @@ var fs = require('fs');
 var sass = require('node-sass');
 var packageJson = require('../package.json');
 var swig = require('swig');
-var swigPiece = new swig.Swig({ varControls: ['{{@piece', '}}'] });
-var swigPart = new swig.Swig({ varControls: ['{{@part', '}}'] });
-var swigPage = new swig.Swig({ varControls: ['{{@page', '}}'] });
-var swigProperty = new swig.Swig({ varControls: ['{{@property', '}}'] });
+var swigPiece = new swig.Swig({ varControls: ['{{@piece', '}}'], cache:false });
+var swigPart = new swig.Swig({ varControls: ['{{@part', '}}'], cache:false });
+var swigPage = new swig.Swig({ varControls: ['{{@page', '}}'], cache:false });
+var swigProperty = new swig.Swig({ varControls: ['{{@property', '}}'], cache:false });
 var uglifyCss = require("uglifyCss");
 var uglifyJs = require("uglify-js");
 
@@ -18,31 +18,6 @@ var property = packageJson.property;
 
 var getFileContents = function(file) {
     return fs.existsSync(file) ? fs.readFileSync(file).toString() : '';
-};
-
-var buildHtml = function(items, path, swigFn, callback) {
-    try {
-
-        items.forEach(function(item) {
-
-            var jstFile = getFileContents(path + item + ".jst");
-            var ymlFile = getFileContents(path + item + ".yml");
-            var htmlFile = path + item + ".html";
-            var data = frontMatter(ymlFile);
-            var swigCompile = swigFn.compile(jstFile);
-            var compiled = swigCompile(data.attributes);
-            fs.writeFileSync(htmlFile, compiled);
-            console.log('compile:', htmlFile);
-
-        });
-
-        if(callback) callback();
-
-    } catch (e) {
-
-        console.log(e);
-
-    }
 };
 
 var buildJs = function(){
@@ -74,7 +49,17 @@ var buildJs = function(){
     fs.writeFileSync('./build/scripts.js', js.code);
 };
 
-var buildSass = function(){
+var buildJsVendor = function(){
+    /// concat vendor scripts
+    var vendorScripts = property.vendorScripts.map(function(script){
+        return './src/property/' + script;
+    });
+
+    var js = uglifyJs.minify(vendorScripts);
+    fs.writeFileSync('./build/vendor.js', js.code);
+};
+
+var buildCss = function(){
     var propertyStyles = property.styles.map(function(style){
         return './src/property/' + style + ".scss";
     });
@@ -103,6 +88,41 @@ var buildSass = function(){
     fs.writeFileSync('./build/styles.css', css);
 };
 
+var buildCssVendor = function(){
+    // concat vendor styles
+    var vendorStyles = property.vendorStyles.map(function(style){
+        return './src/vendor/' + style;
+    });
+
+    var css = uglifyCss.processFiles(vendorStyles);
+    fs.writeFileSync('./build/vendor.css', css);
+};
+
+var buildHtml = function(items, path, swigFn, callback) {
+    try {
+
+        items.forEach(function(item) {
+
+            var jstFile = getFileContents(path + item + ".jst");
+            var ymlFile = getFileContents(path + item + ".yml");
+            var htmlFile = path + item + ".html";
+            var data = frontMatter(ymlFile);
+            var swigCompile = swigFn.compile(jstFile);
+            var compiled = swigCompile(data.attributes);
+            fs.writeFileSync(htmlFile, compiled);
+            console.log('compile:', htmlFile);
+
+        });
+
+        if(callback) callback();
+
+    } catch (e) {
+
+        console.log(e);
+
+    }
+};
+
 var buildHtmlProperty = function(){
     // swig and copy all pages
     property.pages.forEach(function(page){
@@ -115,7 +135,7 @@ var buildHtmlProperty = function(){
     });
 
     buildJs();
-    buildSass();
+    buildCss();
 };
 
 var buildHtmlPages = function(callback) {
@@ -137,16 +157,21 @@ var clean = function(callback) {
     });
 };
 
-// rebuild on load
+// rebuild on start
 clean(buildHtmlPieces);
 
 // watch dev to rebuild files on change
-// browserSync.watch("./src/**/*.{html,yml}").on("change", buildHtml);
-// browserSync.watch("./src/**/*.js").on("change", buildJs);
-// browserSync.watch("./src/**/*.{scss,css}").on("change", buildCss);
+browserSync.watch("./src/property/*.{jst,yml}").on("change", buildHtmlProperty);
+browserSync.watch("./src/pages/*.{jst,yml}").on("change", buildHtmlPages);
+browserSync.watch("./src/parts/*.{jst,yml}").on("change", buildHtmlParts);
+browserSync.watch("./src/pieces/*.{jst,yml}").on("change", buildHtmlPieces);
+browserSync.watch("./src/+(property|pages|parts|pieces)/*.js").on("change", buildJs);
+browserSync.watch("./src/vendor/**/*.js").on("change", buildJsVendor);
+browserSync.watch("./src/+(property|pages|parts|pieces)/*.{scss,css}").on("change", buildCss);
+browserSync.watch("./src/vendor/**/*.{scss,css}").on("change", buildCssVendor);
 
 // // watch build folder to reload on changes
-// browserSync.watch("./build/**/*").on("change", browserSync.reload);
+browserSync.watch("./build/**/*").on("change", browserSync.reload);
 
 // // Now init the Browsersync server
-// browserSync.init({ server: "./build/"});
+browserSync.init({ server: "./build/"});

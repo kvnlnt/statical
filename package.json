@@ -4,8 +4,7 @@
     "description": "Static site generator boilerplate",
     "main": "index.js",
     "scripts": {
-        "dev": "node ./bin/dev.js",
-        "test": "./bin/test.sh"
+        "dev": "node ./bin/dev.js"
     },
     "author": "Kevin Lint",
     "license": "ISC",
