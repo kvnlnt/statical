@@ -38,26 +38,35 @@ Clear as mud? Let's try an example. Let's say you have a page called about-us. I
 
 #### ./src/pages/about-us.jst
 
-	{% include "./src/parts/page-header.html" %}
+	{% include "./src/parts/header.html" %}
 	...A bunch of stuff about us...
 
-This page has a code-behind data file (about-us.yml) with a *title* property. The title is not being output here - although it could be with a <code>{{@page title }}</code>. Instead the page is including a part called page header. Let's take a look at what the page-header part's files look like:
+This page has a code-behind data file (about-us.yml) with a *title* property. The title is not being output here - although it could be with a <code>{{@page title }}</code>. Instead the page is including a part called page header. Let's take a look at what the header part's files look like:
 
-#### ./src/parts/page-header.yml
+#### ./src/parts/header.yml
 
 	---
 	leadline: This page is called 
 	---
 
-#### ./src/parts/page-header.jst
+#### ./src/parts/header.jst
 
 	{{@part leadline}} {{@page title }}
 
+This would lead to the generation of an *about-us.html* page who's content would look like this:
+
+#### ./src/pages/about-us.html:
+
+	This page is called About Us
+
 #### Compilation then looks like this:
 
-- the *page-header* part evaluated all <code>{{@part ...}}</code> blocks with it's data (coming from it's yml file).
-- the *page-header* part is then included into the *about-us* page.
+- the *header* part evaluated all <code>{{@part ...}}</code> blocks with it's data (coming from it's yml file).
+- the *header* part is then included into the *about-us* page.
 - the *about-us* page then evaluates all the <code>{{@page ...}}</code> blocks with it's data (coming from it's yml file).
 
 #### Make Sense?
-With each tier having contextual variable scope it's easy to compose all the elements within your site powerful ways. 
+With each tier having contextual variable scope it's easy to compose all the elements within your site powerful ways. Let me know if you start using this tool, I'd love to get some feedback!!!
+
+
+
