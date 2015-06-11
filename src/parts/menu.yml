@@ -1,0 +1,9 @@
+---
+links:
+    -
+        txt: Home
+        url: /
+    -
+        txt: About
+        url: /about.html
+---

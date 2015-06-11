@@ -23,11 +23,17 @@
         "name": "kevinlint.com",
         "scripts": ["main"],
         "vendorScripts": [],
-        "styles": ["main"],
+        "styles": ["main","grid","colors"],
         "vendorStyles": [],
-        "pages": ["index"],
+        "pages": [
+            "index",
+            "about"
+        ],
         "parts": [
-            "menu", "head", "footer-scripts"
+            "menu",
+            "head",
+            "footer-scripts",
+            "header"
         ],
         "pieces": [
             "logo"

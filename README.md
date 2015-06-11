@@ -1,4 +1,4 @@
-![Alt text](statical.png)
+![Alt text](build/images/statical.png)
 
 
 Statical is a static website generator that uses simple concepts to provide powerful functionality without a myriad of hacks, dependencies and the usual nonsense.

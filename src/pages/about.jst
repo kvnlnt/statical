@@ -2,15 +2,16 @@
 <html class="no-js" lang="">
     {% include "./src/parts/head.html" %}
     <body>
+        <div class="body-wrapper">
         {% include "./src/parts/header.html" %}
-        <div class="row">
+         <div class="row">
             <div class="col">{% include "./src/parts/menu.html" %}</div>
             <div class="col">
                 <div class="content">
                 {% autoescape true %}{{@page content }}{% endautoescape %}
                 </div>
         </div>
+        {% include "./src/parts/footer-scripts.html" %}
     </div>
-    {% include "./src/parts/footer-scripts.html" %}
-</body>
+    </body>
 </html>

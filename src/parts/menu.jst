@@ -1,6 +1,7 @@
-{{@property name}}
-{% include "./src/pieces/logo.html" %}
+<div class="menu">
 <ul>
-	<li><a href="/">home</a></li>
-	<li><a href="/about.html">about</a></li>
+    {% for link in links %}
+	<li><a href="{{@part link.url}}">{{@part link.txt}}</a></li>
+    {% endfor %}
 </ul>
+</div>

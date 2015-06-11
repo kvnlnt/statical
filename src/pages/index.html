@@ -3,7 +3,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Home</title>
+    <title> {{@property name}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -12,13 +12,29 @@
     <script src="vendor.js"></script>
 </head>
     <body>
-        {{@property name}}
-test: <img src="" class="logo"/>
+        <div class="header">
+<div class="logo">
+<img src="/images/statical.png"/>
+</div>
+<h1></h1>
+</div>
+        <div class="row">
+            <div class="col"><div class="menu">
 <ul>
-	<li><a href="/">home</a></li>
-	<li><a href="/about.html">about</a></li>
+    
+	<li><a href="/">Home</a></li>
+    
+	<li><a href="/about.html">About</a></li>
+    
 </ul>
-        <script src="scripts.js"></script>
+</div></div>
+            <div class="col">
+                <div class="content">
+                    this is content
+                </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
 
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>
@@ -29,5 +45,5 @@ test: <img src="" class="logo"/>
     r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
     ga('create','UA-XXXXX-X','auto');ga('send','pageview');
 </script>
-    </body>
+</body>
 </html>

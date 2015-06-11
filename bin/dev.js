@@ -50,12 +50,12 @@ var buildJs = function(){
 };
 
 var buildJsVendor = function(){
-    /// concat vendor scripts
+    // concat vendor scripts
     var vendorScripts = property.vendorScripts.map(function(script){
         return './src/vendor/' + script;
     });
 
-    var js = uglifyJs.minify(vendorScripts);
+    var js = vendorScripts.length > 0 ? uglifyJs.minify(vendorScripts) : { code: ''};
     fs.writeFileSync('./build/vendor.js', js.code);
 };
 
@@ -72,7 +72,7 @@ var buildCss = function(){
         return './src/parts/' + style + ".scss";
     });
 
-    var pieceStyles = property.scripts.map(function(style){
+    var pieceStyles = property.pieces.map(function(style){
         return './src/pieces/' + style + ".scss";
     });
 
@@ -84,7 +84,12 @@ var buildCss = function(){
             return fs.existsSync(style);
         });
 
-    var css = uglifyCss.processFiles(styles);
+    var concatedFiles = styles.map(function(file){
+        return getFileContents(file);
+    }).join('');
+
+    var sassCompiled = sass.renderSync({data: concatedFiles});
+    var css = uglifyCss.processString(sassCompiled.css.toString());
     fs.writeFileSync('./build/styles.css', css);
 };
 
@@ -108,6 +113,7 @@ var buildHtml = function(items, path, swigFn, callback) {
             var htmlFile = path + item + ".html";
             var data = frontMatter(ymlFile);
             var swigCompile = swigFn.compile(jstFile);
+            data.attributes.content = data.body;
             var compiled = swigCompile(data.attributes);
             fs.writeFileSync(htmlFile, compiled);
             console.log('compile:', htmlFile);
@@ -133,9 +139,6 @@ var buildHtmlProperty = function(){
         var compiled = swigCompile(property);
         fs.writeFileSync(targetFile, compiled);
     });
-
-    buildJs();
-    buildCss();
 };
 
 var buildHtmlPages = function(callback) {
@@ -150,15 +153,33 @@ var buildHtmlPieces = function() {
     buildHtml(property.pieces, './src/pieces/', swigPiece, buildHtmlParts);
 };
 
-var clean = function(callback) {
-    del(['./src/**/*.html', './build/*'], function(err, paths) {
+var cleanHtml = function() {
+    del(['./src/**/*.html', './build/*.html'], function(err, paths) {
         console.log('Deleted files/folders:\n', paths.join('\n'));
-        if(callback) callback();
+        buildHtmlPieces();
+    });
+};
+
+var cleanJs = function(){
+    del(['./build/*.js'], function(err, paths) {
+        console.log('Deleted files/folders:\n', paths.join('\n'));
+        buildJs();
+        buildJsVendor();
+    });
+};
+
+var cleanCss = function(){
+    del(['./build/*.css'], function(err, paths) {
+        console.log('Deleted files/folders:\n', paths.join('\n'));
+        buildCss();
+        buildCssVendor();
     });
 };
 
 // rebuild on start
-clean(buildHtmlPieces);
+cleanHtml();
+cleanJs();
+cleanCss();
 
 // watch dev to rebuild files on change
 browserSync.watch("./src/property/*.{jst,yml}").on("change", buildHtmlProperty);
