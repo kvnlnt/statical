@@ -1,0 +1,18 @@
+<!doctype html>
+<html class="no-js" lang="">
+    {% include "../../parts/head.html" %}
+    <body>
+        <div class="body">
+            {% include "../../parts/header.html" %}
+            <div class="row">
+                <div class="col">{% include "../../parts/menu.html" %}</div>
+                <div class="col">
+                    <div class="content">
+                    {% autoescape true %}{{@page content }}{% endautoescape %}
+                    </div>
+                </div>
+            </div>
+            {% include "../../parts/footer-scripts.html" %}
+        </div>
+    </body>
+</html>
