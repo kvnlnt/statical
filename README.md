@@ -61,7 +61,7 @@ Compilation for css is similar but moves the property css up after patterns like
 	1. parts
 	1. pages
 
-This order allows for a clean cascading heirarchy. First all your library code (like bootstrap, etc) in patterns and all your styles in property is compiled to establish a foundation. Then pieces, parts and pages are styled. This provides a clean hierarchy of overwrites. A `Piece`, while inheriting whatever base styling is applied can further apply it's own styling with it's code behind file. However, when a piece is included into a `Part` or `Page`, those elements can overwrite the `Pieces` providing contextual styling.
+This order allows for a clean cascading heirarchy. First all your library code (like bootstrap, etc) in patterns and all your styles in property are compiled to establish a foundation. Then pieces, parts and pages are styled. This provides a clean hierarchy of overwrites. A `Piece`, while inheriting whatever base styling is applied can further apply it's own styling with it's code behind file. However, when a piece is included into a `Part` or `Page`, those elements can overwrite the `Pieces` providing contextual styling.
 
 ## Scopes
 There are four scopes matching each element type. A custom swig "varControl" has been setup for each. Scopes are accessed inside .jst or .html files via {{@scopename somevariable }}. The four scopes are:

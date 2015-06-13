@@ -1,12 +1,10 @@
-body {
-	margin:0;
-    font-size: 10px;
-}
-
 .body {
     @include rem(font-size, 1); // reset font size to base for all elements
+    margin:0;
+    padding:0;
 }
 
 .content {
-    @include rem(margin, 1);
+    margin:0;
+    @include rem(padding, 0, 2);
 }

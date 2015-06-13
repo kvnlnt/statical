@@ -27,7 +27,7 @@
         "grid",
         "colors",
         "typography",
-        "main"
+        "base"
       ]
     },
     "property": {
@@ -35,12 +35,11 @@
       "scripts": [
         "main"
       ],
-      "styles": []
+      "styles": ["main"]
     },
     "pages": [
       "index",
-      "about",
-      "test/new"
+      "about"
     ],
     "parts": [
       "menu",

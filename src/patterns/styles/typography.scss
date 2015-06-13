@@ -1,4 +1,4 @@
 h1 {
-    @include rem(margin, 1);
+    @include rem(margin, 0);
     @include rem(font-size, 2);
 }

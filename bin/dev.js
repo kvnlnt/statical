@@ -206,15 +206,16 @@ cleanAll();
 
 // watch dev to rebuild files on change
 browserSync.watch("./src/property/**/*.{jst,yml,layout}").on("change", buildHtmlProperty);
+browserSync.watch("./src/patterns/**/*.{layout}").on("change", buildHtmlPages);
 browserSync.watch("./src/pages/**/*.{jst,yml}").on("change", buildHtmlPages);
 browserSync.watch("./src/parts/**/*.{jst,yml}").on("change", buildHtmlParts);
 browserSync.watch("./src/pieces/**/*.{jst,yml}").on("change", buildHtmlPieces);
-browserSync.watch("./src/+(property|pages|parts|pieces)/**/*.js").on("change", buildJs);
-browserSync.watch("./src/+(property|pages|parts|pieces)/**/*.{scss,css}").on("change", buildCss);
+browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.js").on("change", buildJs);
+browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.{scss,css}").on("change", buildCss);
 browserSync.watch("package.json").on("change", cleanAll);
 
-// // // watch build folder to reload on changes
+// watch build folder to reload on changes
 browserSync.watch("./build/**/*").on("change", browserSync.reload);
 
-// // // Now init the Browsersync server
+// Now init the Browsersync server
 browserSync.init({ server: "./build/"});

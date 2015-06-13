@@ -5,10 +5,11 @@
         <div class="body">
             {% include "../../parts/header.html" %}
             <div class="row">
-                <div class="col">{% include "../../parts/menu.html" %}</div>
+                <div class="col col-33">{% include "../../parts/menu.html" %}</div>
                 <div class="col">
                     <div class="content">
-                    {% autoescape true %}{{@page content }}{% endautoescape %}
+                    <h1>{{@page name }}</h1>
+                    {% autoescape false %}{{@page content }}{% endautoescape %}
                     </div>
                 </div>
             </div>
