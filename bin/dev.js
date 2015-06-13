@@ -18,6 +18,8 @@ var uglifyJs = require("uglify-js");
 // SHORTCUTS
 // HELPERS 
 // BUILD SCRIPTS
+// CLEANERS
+// WATCHERS
 
 // SHORTCUTS
 var patterns = packageJson.build.patterns;
@@ -175,6 +177,7 @@ var buildHtmlPieces = function() {
     buildHtml(pieces, './src/pieces/', swigPiece, buildHtmlParts);
 };
 
+// CLEANERS
 var cleanHtml = function() {
     del(['./src/**/*.html', './build/**/*.html'], function(err, paths) {
         console.log('Deleted files/folders:\n', paths.join('\n'));
@@ -203,6 +206,9 @@ var cleanAll = function(){
 };
 
 cleanAll();
+
+
+// WATCHERS
 
 // watch dev to rebuild files on change
 browserSync.watch("./src/property/**/*.{jst,yml,layout}").on("change", buildHtmlProperty);
