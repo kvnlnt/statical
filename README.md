@@ -29,6 +29,8 @@ The folder structure looks like this:
 - bin : _task scripts_
 	- dev.js : _the main dev/build script_
 - build : _the build folder!_
+	- images : _all your images go here_
+	- fonts : _fonts go here_
 - src : _all source code_
 	- patterns : _reusable code patterns, library code_
 		- html : _html patterns_
@@ -51,7 +53,7 @@ The final ./build/script.js file is compiled synchronously. Reading from the pac
 
 This means all your library code (like jquery or custom libs) need to go into the patterns folder. And your main application code needs to go into the property folder, running last after all libs, components, etc have been defined. 
 
-Complication for css is similar but moves the property css up after patterns like so:
+Compilation for css is similar but moves the property css up after patterns like so:
 
 	1. patterns/styles
 	1. property
