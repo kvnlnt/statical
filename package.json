@@ -1,42 +1,55 @@
 {
-    "name": "statical",
-    "version": "1.0.0",
-    "description": "Static site generator boilerplate",
-    "main": "index.js",
-    "scripts": {
-        "dev": "node ./bin/dev.js"
-    },
-    "author": "Kevin Lint",
-    "license": "ISC",
-    "dependencies": {
-        "async": "^1.2.1",
-        "browser-sync": "^2.7.6",
-        "del": "^1.2.0",
-        "front-matter": "^1.0.0",
-        "fs": "0.0.2",
-        "node-sass": "^3.1.2",
-        "swig": "^1.4.2",
-        "uglify-js": "^2.4.23",
-        "uglifycss": "0.0.15"
+  "name": "statical",
+  "version": "1.0.0",
+  "description": "Static site generator boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./bin/dev.js"
+  },
+  "author": "Kevin Lint",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.2.1",
+    "browser-sync": "^2.7.6",
+    "del": "^1.2.0",
+    "front-matter": "^1.0.0",
+    "fs": "0.0.2",
+    "node-sass": "^3.1.2",
+    "swig": "^1.4.2",
+    "uglify-js": "^2.4.23",
+    "uglifycss": "0.0.15"
+  },
+  "build": {
+    "patterns": {
+      "scripts": [],
+      "styles": [
+        "dimensions",
+        "grid",
+        "colors",
+        "typography",
+        "main"
+      ]
     },
     "property": {
-        "name": "kevinlint.com",
-        "scripts": ["main"],
-        "vendorScripts": [],
-        "styles": ["main","grid","colors"],
-        "vendorStyles": [],
-        "pages": [
-            "index",
-            "about"
-        ],
-        "parts": [
-            "menu",
-            "head",
-            "footer-scripts",
-            "header"
-        ],
-        "pieces": [
-            "logo"
-        ]
-    }
+      "name": "kevinlint.com",
+      "scripts": [
+        "main"
+      ],
+      "styles": []
+    },
+    "pages": [
+      "index",
+      "about",
+      "test/new"
+    ],
+    "parts": [
+      "menu",
+      "head",
+      "footer-scripts",
+      "header"
+    ],
+    "pieces": [
+      "logo"
+    ]
+  }
 }
