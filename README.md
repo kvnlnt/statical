@@ -1,7 +1,7 @@
 ![Alt text](build/images/statical.png)
 
 
-Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and conceptual overhead.
+Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead.
 
 ## Setup
 Clone this repo and:
@@ -9,9 +9,9 @@ Clone this repo and:
 	npm install & npm run dev
 
 ## How it works
-Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a `Property` which contains a `Page` which contains a `Part` which contains a `Piece`. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header `Part` would be comprised of a header.jst, header.yml, header.js and a header.css file. A concept better understood through demonstration (see below).
+Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a `Property` which contains a `Page` which contains a `Part` which contains a `Piece`. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header `Part` would be comprised of a header.jst, header.yml, header.js and a header.css file.
 
-The main concept however is that each content tier wraps the tier below it and can pass data to them. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).
+The main concept however is that each content tier wraps the tier below it. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).
 
 ## Minimal knowledge required
 Front end development is becoming ridiculous - simply too many tools, apis, build systems, plugins, etc. It's a mess. Statical is an attempt to find the balance between a back to basics approach coupled with the raw power of a number of node modules. To use *Statical* you need to understand the following: 
@@ -21,7 +21,7 @@ Front end development is becoming ridiculous - simply too many tools, apis, buil
 - [yml](http://www.yaml.org/start.html) syntax
 
 ## Future-proofy
-Statical's build script uses [PostCss](https://github.com/postcss/postcss) and [Babel](https://babeljs.io/) to transform CSS and Javascript. This means you can both use and learn future syntax today. Being "transpilers", both tools greatly assist in writing less code that is cross browser compatible (there are exceptions) and cleaner.
+Statical's build script uses [PostCss](https://github.com/postcss/postcss) and [Babel](https://babeljs.io/) to transform CSS and Javascript. This means you can both use and learn future syntax today. Also, being "transpilers" means both tools greatly assist in writing less code that is cross browser compatible (there are exceptions) and cleaner. One small example of this is PostCss' "autoprefixer" plugin (we included it in Statical) which allows you to do away with vendor-prefixes all together. If you're not familiar with these tools - each provides plenty of docs. However, you don't even have to give a care, generic js and css work too.
 
 ## Structure
 The folder structure looks like this:
