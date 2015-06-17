@@ -1,0 +1,14 @@
+@media (--mobile-landscape-viewport) {
+    .row {
+        width: 100%;
+        display: table;
+        table-layout: fixed;
+    }
+    .col {
+        display: table-cell;
+        vertical-align: top;
+    }
+    .col-33 {
+        width: 33%;
+    }
+}

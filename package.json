@@ -10,24 +10,25 @@
   "license": "ISC",
   "dependencies": {
     "async": "^1.2.1",
+    "autoprefixer": "^5.2.0",
     "browser-sync": "^2.7.6",
+    "cssnext": "^1.6.0",
+    "csswring": "^3.0.5",
     "del": "^1.2.0",
     "front-matter": "^1.0.0",
     "fs": "0.0.2",
     "node-sass": "^3.1.2",
+    "postcss": "^4.1.11",
     "swig": "^1.4.2",
-    "uglify-js": "^2.4.23",
-    "uglifycss": "0.0.15"
+    "uglify-js": "^2.4.23"
   },
   "build": {
     "patterns": {
       "scripts": [],
       "styles": [
-        "dimensions",
+        "settings",
         "grid",
-        "colors",
-        "typography",
-        "base"
+        "typography"
       ]
     },
     "property": {
@@ -35,7 +36,9 @@
       "scripts": [
         "main"
       ],
-      "styles": ["main"]
+      "styles": [
+        "main"
+      ]
     },
     "pages": [
       "index",

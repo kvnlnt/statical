@@ -1,0 +1,17 @@
+.menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.menu ul li a {
+    line-height: 2rem;
+    display: block;
+    text-decoration: none;
+    text-indent: 1rem;
+    color: var(--black);
+    background-color: var(--light-grey);
+}
+.menu ul li a:hover {
+    color: var(--white);
+    background-color: var(--black);
+}

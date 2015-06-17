@@ -1,20 +1,17 @@
 ![Alt text](build/images/statical.png)
 
 
-Statical is a static website generator that uses simple concepts to provide powerful functionality without a myriad of hacks, dependencies and the usual nonsense.
+Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and conceptual overhead.
 
 ## Setup
 Clone this repo and:
 
-	npm install
-	npm run dev
-
-## Dependencies
-
-* [libsass](https://github.com/sass/libsass)
+	npm install & npm run dev
 
 ## How it works
-Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a `Property` which contains a `Page` which contains a `Part` which contains a `Piece`. You decide how your content should be structured. Each type of content is a series of files that mimic the code-behind architecture. For example a header part might have a header.jst, header.yml and a header.scss file. However, the main concept is that each content tier wraps the tier below it and can pass data to them. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).
+Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a `Property` which contains a `Page` which contains a `Part` which contains a `Piece`. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header `Part` would be comprised of a header.jst, header.yml, header.js and a header.css file. A concept better understood through demonstration (see below).
+
+The main concept however is that each content tier wraps the tier below it and can pass data to them. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).
 
 ## Minimal knowledge required
 Front end development is becoming ridiculous - simply too many tools, apis, build systems, plugins, etc. It's a mess. Statical is an attempt to find the balance between a back to basics approach coupled with the raw power of a number of node modules. To use *Statical* you need to understand the following: 
@@ -22,6 +19,9 @@ Front end development is becoming ridiculous - simply too many tools, apis, buil
 - How to use npm
 - How [swig](http://paularmstrong.github.io/swig/) works (the templating engine)
 - [yml](http://www.yaml.org/start.html) syntax
+
+## Future-proofy
+Statical's build script uses [PostCss](https://github.com/postcss/postcss) and [Babel](https://babeljs.io/) to transform CSS and Javascript. This means you can both use and learn future syntax today. Being "transpilers", both tools greatly assist in writing less code that is cross browser compatible (there are exceptions) and cleaner.
 
 ## Structure
 The folder structure looks like this:
@@ -45,21 +45,21 @@ The folder structure looks like this:
 ## Compilation
 The final ./build/script.js file is compiled synchronously. Reading from the package.json file the compilation goes like this:
 
-	1. patterns/scripts
-	1. pieces
-	1. parts
-	1. pages
-	1. property
+1. patterns/scripts
+1. pieces
+1. parts
+1. pages
+1. property
 
 This means all your library code (like jquery or custom libs) need to go into the patterns folder. And your main application code needs to go into the property folder, running last after all libs, components, etc have been defined. 
 
 Compilation for css is similar but moves the property css up after patterns like so:
 
-	1. patterns/styles
-	1. property
-	1. pieces
-	1. parts
-	1. pages
+1. patterns/styles
+1. property
+1. pieces
+1. parts
+1. pages
 
 This order allows for a clean cascading heirarchy. First all your library code (like bootstrap, etc) in patterns and all your styles in property are compiled to establish a foundation. Then pieces, parts and pages are styled. This provides a clean hierarchy of overwrites. A `Piece`, while inheriting whatever base styling is applied can further apply it's own styling with it's code behind file. However, when a piece is included into a `Part` or `Page`, those elements can overwrite the `Pieces` providing contextual styling.
 

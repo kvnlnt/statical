@@ -1,25 +1,28 @@
-// modules
+// TOC
+// -----------------------
+// MODULES
+// SHORTCUTS
+// HELPERS
+// BUILDERS
+// CLEANERS
+// WATCHERS
+
+// MODULES
 var browserSync = require("browser-sync").create();
 var del = require('del');
 var frontMatter = require('front-matter');
 var fs = require('fs');
-var sass = require('node-sass');
 var packageJson = require('../package.json');
 var swig = require('swig');
 var swigPiece = new swig.Swig({ varControls: ['{{@piece', '}}'], cache:false });
 var swigPart = new swig.Swig({ varControls: ['{{@part', '}}'], cache:false });
 var swigPage = new swig.Swig({ varControls: ['{{@page', '}}'], cache:false });
 var swigProperty = new swig.Swig({ varControls: ['{{@property', '}}'], cache:false });
-var uglifyCss = require("uglifyCss");
 var uglifyJs = require("uglify-js");
-
-// TOC
-// -----------------------
-// SHORTCUTS
-// HELPERS 
-// BUILD SCRIPTS
-// CLEANERS
-// WATCHERS
+var postcss = require('postcss');
+var autoprefixer = require('autoprefixer');
+var cssnext = require('cssnext');
+var csswring = require('csswring');
 
 // SHORTCUTS
 var patterns = packageJson.build.patterns;
@@ -53,7 +56,7 @@ var ensureFilePath = function(file, index){
     }
 };
 
-// BUILD SCRIPTS 
+// BUILDERS
 var buildJs = function(){
     var patternScripts = patterns.scripts.map(function(script){
         return './src/patterns/scripts/' + script + ".js";
@@ -90,23 +93,23 @@ var buildJs = function(){
 
 var buildCss = function(){
     var patternStyles = patterns.styles.map(function(style){
-        return './src/patterns/styles/' + style + ".scss";
+        return './src/patterns/styles/' + style + ".css";
     });
 
     var propertyStyles = property.styles.map(function(style){
-        return './src/property/' + style + ".scss";
+        return './src/property/' + style + ".css";
     });
 
     var pageStyles = pages.map(function(style){
-        return './src/pages/' + style + ".scss";
+        return './src/pages/' + style + ".css";
     });
 
     var partStyles = parts.map(function(style){
-        return './src/parts/' + style + ".scss";
+        return './src/parts/' + style + ".css";
     });
 
     var pieceStyles = pieces.map(function(style){
-        return './src/pieces/' + style + ".scss";
+        return './src/pieces/' + style + ".css";
     });
 
     var styles = patternStyles
@@ -118,13 +121,15 @@ var buildCss = function(){
             return fs.existsSync(style);
         });
 
-    var concatedFiles = styles.map(function(file){
+    var concatedFileSources = styles.map(function(file){
         return getFileContents(file);
     }).join('');
 
-    var sassCompiled = sass.renderSync({data: concatedFiles});
-    var css = uglifyCss.processString(sassCompiled.css.toString());
-    fs.writeFileSync('./build/styles.css', css);
+    postcss([autoprefixer(), cssnext(), csswring()]).process(concatedFileSources)
+    .then(function (result) {
+        console.log('compile:', './build/styles.css');
+        fs.writeFileSync('./build/styles.css', result.css);
+    });
 };
 
 var buildHtml = function(items, path, swigFn, callback) {
@@ -207,7 +212,6 @@ var cleanAll = function(){
 
 cleanAll();
 
-
 // WATCHERS
 
 // watch dev to rebuild files on change
@@ -217,7 +221,7 @@ browserSync.watch("./src/pages/**/*.{jst,yml}").on("change", buildHtmlPages);
 browserSync.watch("./src/parts/**/*.{jst,yml}").on("change", buildHtmlParts);
 browserSync.watch("./src/pieces/**/*.{jst,yml}").on("change", buildHtmlPieces);
 browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.js").on("change", buildJs);
-browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.{scss,css}").on("change", buildCss);
+browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.css").on("change", buildCss);
 browserSync.watch("package.json").on("change", cleanAll);
 
 // watch build folder to reload on changes
