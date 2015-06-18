@@ -92,10 +92,19 @@ var buildJs = function(){
         return getFileContents(file);
     }).join('');
 
-    var result = babel.transform(concatedFiles, {compact: true, sourceMaps:true, sourceMapTarget:'scripts.js.map'}); // => { code, map, ast }
+    var result = babel.transform(concatedFiles,{ 
+        compact:true,
+        sourceMaps:true,
+        sourceFileName:"maps/scripts.js",
+        sourceMapTarget:'scripts.js'
+    });
+
+    // hackily add in sourceMappingUrl due to babel js api not supporting it
+    var compiledCode = result.code + '\n//# sourceMappingURL=' + 'scripts.js.map';
+
     console.log("compile:", './build/scripts');
-    fs.writeFileSync('./build/scripts.js', result.code);
-    fs.writeFileSync('./build/scripts.js.map', result.map.mappings);
+    fs.writeFileSync('./build/scripts.js', compiledCode);
+    fs.writeFileSync('./build/scripts.js.map', JSON.stringify(result.map));
 };
 
 var buildCss = function(){
@@ -133,10 +142,11 @@ var buildCss = function(){
     }).join('');
 
     postcss([customMedia(), autoprefixer(), cssnext(), csswring()])
-    .process(concatedFiles, { inline:false })
+    .process(concatedFiles, { from:'maps/styles.css', to:'styles.css', map:{inline:false} })
     .then(function (result) {
         console.log('compile:', './build/styles.css');
         fs.writeFileSync('./build/styles.css', result.css);
+        fs.writeFileSync('./build/styles.css.map', result.map);
     });
 };
 
@@ -199,14 +209,14 @@ var cleanHtml = function() {
 };
 
 var cleanJs = function(){
-    del(['./build/*.js'], function(err, paths) {
+    del(['./build/*.{js,js.map}'], function(err, paths) {
         console.log('Deleted files/folders:\n', paths.join('\n'));
         buildJs();
     });
 };
 
 var cleanCss = function(){
-    del(['./build/*.css'], function(err, paths) {
+    del(['./build/*.{css,css.map}'], function(err, paths) {
         console.log('Deleted files/folders:\n', paths.join('\n'));
         buildCss();
     });

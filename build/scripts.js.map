@@ -1,1 +1,1 @@
-aAAA,IAAI,IAAI,CAAG,SAAP,IAAI,EAAa,CACjB,OAAO,CAAC,GAAG,CAAC,gBAAgB,CAAC,CAAC,CACjC,CAAC
+{"version":3,"sources":["maps/scripts.js"],"names":[],"mappings":"aAAA,IAAI,IAAI,CAAG,SAAP,IAAI,EAAa,CACjB,OAAO,CAAC,GAAG,CAAC,gBAAgB,CAAC,CAAC,CACjC,CAAC,AAEF,IAAI,EAAE,CAAC","file":"scripts.js","sourcesContent":["var test = function(){\n    console.log('this is a test');\n};\n\ntest();\n\n"]}
