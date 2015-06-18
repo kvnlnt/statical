@@ -1,2 +1,1 @@
-var test={};
-//# sourceMappingURL=scripts.js.map
+'use strict';var test=function test(){console.log('this is a test');};

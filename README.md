@@ -103,7 +103,7 @@ Notice the two different scopes? *@part* and *@page*? Upon compilation a header.
 
 	This page is called {{@page title}}
 
-This *header.html* file would then included into *about-us.jst* which would be compiled to a *about-us.html* page who's content would end up looking like this:
+This *header.html* file would then be included into *about-us.jst* which would be compiled to a *about-us.html* page who's content would end up looking like this:
 
 ### ./src/pages/about-us.html:
 

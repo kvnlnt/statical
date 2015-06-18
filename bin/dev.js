@@ -18,8 +18,9 @@ var swigPiece = new swig.Swig({ varControls: ['{{@piece', '}}'], cache:false });
 var swigPart = new swig.Swig({ varControls: ['{{@part', '}}'], cache:false });
 var swigPage = new swig.Swig({ varControls: ['{{@page', '}}'], cache:false });
 var swigProperty = new swig.Swig({ varControls: ['{{@property', '}}'], cache:false });
-var uglifyJs = require("uglify-js");
+var babel = require("babel-core");
 var postcss = require('postcss');
+var customMedia = require("postcss-custom-media")
 var autoprefixer = require('autoprefixer');
 var cssnext = require('cssnext');
 var csswring = require('csswring');
@@ -78,7 +79,7 @@ var buildJs = function(){
         return './src/pieces/' + script + ".js";
     });
 
-    var scripts = patternScripts
+    var files = patternScripts
         .concat(propertyScripts)
         .concat(pageScripts)
         .concat(partScripts)
@@ -87,8 +88,14 @@ var buildJs = function(){
             return fs.existsSync(script);
         });
 
-    var js = uglifyJs.minify(scripts, { outSourceMap: "scripts.js.map" });
-    fs.writeFileSync('./build/scripts.js', js.code);
+    var concatedFiles = files.map(function(file){
+        return getFileContents(file);
+    }).join('');
+
+    var result = babel.transform(concatedFiles, {compact: true, sourceMaps:true, sourceMapTarget:'scripts.js.map'}); // => { code, map, ast }
+    console.log("compile:", './build/scripts');
+    fs.writeFileSync('./build/scripts.js', result.code);
+    fs.writeFileSync('./build/scripts.js.map', result.map.mappings);
 };
 
 var buildCss = function(){
@@ -112,7 +119,7 @@ var buildCss = function(){
         return './src/pieces/' + style + ".css";
     });
 
-    var styles = patternStyles
+    var files = patternStyles
         .concat(propertyStyles)
         .concat(pageStyles)
         .concat(partStyles)
@@ -121,11 +128,12 @@ var buildCss = function(){
             return fs.existsSync(style);
         });
 
-    var concatedFileSources = styles.map(function(file){
+    var concatedFiles = files.map(function(file){
         return getFileContents(file);
     }).join('');
 
-    postcss([autoprefixer(), cssnext(), csswring()]).process(concatedFileSources)
+    postcss([customMedia(), autoprefixer(), cssnext(), csswring()])
+    .process(concatedFiles, { inline:false })
     .then(function (result) {
         console.log('compile:', './build/styles.css');
         fs.writeFileSync('./build/styles.css', result.css);
