@@ -6,8 +6,11 @@
 // BUILDERS
 // CLEANERS
 // WATCHERS
+// MENU
 
 // MODULES
+var terminalMenu = require('terminal-menu');
+var colors = require('colors');
 var browserSync = require("browser-sync").create();
 var del = require('del');
 var frontMatter = require('front-matter');
@@ -46,7 +49,7 @@ var ensureFilePath = function(file, index){
     // if folder not exists, create it
     var exists = fs.existsSync(directory);
     if (!exists) {
-        console.log('create directory: ', directory);
+        cliMessage('create directory: ', directory);
         fs.mkdirSync(directory);
     }
 
@@ -55,6 +58,16 @@ var ensureFilePath = function(file, index){
         index += 1;
         ensureFilePath(file, index);
     }
+};
+
+var cliMessage = function(action, msg, color){
+    var color = color || 'green';
+    console.log(
+        colors.blue('STATICAL'),
+        ':',
+        eval('colors.'+color)(action),
+        ':',
+        msg);
 };
 
 // BUILDERS
@@ -102,7 +115,8 @@ var buildJs = function(){
     // hackily add in sourceMappingUrl due to babel js api not supporting it
     var compiledCode = result.code + '\n//# sourceMappingURL=' + 'scripts.js.map';
 
-    console.log("compile:", './build/scripts');
+    cliMessage("BUILT", "./build/scripts.js");
+    cliMessage("BUILT", "./build/scripts.js.map");
     fs.writeFileSync('./build/scripts.js', compiledCode);
     fs.writeFileSync('./build/scripts.js.map', JSON.stringify(result.map));
 };
@@ -144,7 +158,8 @@ var buildCss = function(){
     postcss([customMedia(), autoprefixer(), cssnext(), csswring()])
     .process(concatedFiles, { from:'maps/styles.css', to:'styles.css', map:{inline:false} })
     .then(function (result) {
-        console.log('compile:', './build/styles.css');
+        cliMessage('BUILT', './build/styles.css');
+        cliMessage('BUILT', './build/styles.css.map');
         fs.writeFileSync('./build/styles.css', result.css);
         fs.writeFileSync('./build/styles.css.map', result.map);
     });
@@ -162,13 +177,13 @@ var buildHtml = function(items, path, swigFn, callback) {
             data.attributes.content = data.body;
             var compiled = swigCompile(data.attributes);
             fs.writeFileSync(htmlFile, compiled);
-            console.log('compile:', htmlFile);
+            cliMessage('BUILT', htmlFile);
         });
 
         if(callback) callback();
 
     } catch (e) {
-        console.log(e);
+        cliMessage(e);
     }
 };
 
@@ -184,7 +199,7 @@ var buildHtmlProperty = function(){
         var dir = targetFile.split('/');
         ensureFilePath(targetFile,1);
         fs.writeFileSync(targetFile, compiled);
-        console.log('build:', targetFile);
+        cliMessage('BUILT', targetFile);
     });
 };
 
@@ -201,49 +216,96 @@ var buildHtmlPieces = function() {
 };
 
 // CLEANERS
-var cleanHtml = function() {
+var cleanHtml = function(andBuild) {
     del(['./src/**/*.html', './build/**/*.html'], function(err, paths) {
-        console.log('Deleted files/folders:\n', paths.join('\n'));
-        buildHtmlPieces();
+        for(path in paths){
+            cliMessage('DELETED', paths[path], 'yellow');
+        }
+        if(andBuild) buildHtmlPieces();
     });
 };
 
-var cleanJs = function(){
+var cleanJs = function(andBuild){
     del(['./build/*.{js,js.map}'], function(err, paths) {
-        console.log('Deleted files/folders:\n', paths.join('\n'));
-        buildJs();
+        for(path in paths){
+            cliMessage('DELETED', paths[path], 'yellow');
+        }
+        if(andBuild) buildJs();
     });
 };
 
-var cleanCss = function(){
+var cleanCss = function(andBuild){
     del(['./build/*.{css,css.map}'], function(err, paths) {
-        console.log('Deleted files/folders:\n', paths.join('\n'));
-        buildCss();
+        for(path in paths){
+            cliMessage('DELETED', paths[path], 'yellow');
+        }
+        if(andBuild) buildCss();
     });
 };
 
-var cleanAll = function(){
-    cleanHtml();
-    cleanJs();
-    cleanCss();
+var cleanAll = function(andBuild){
+    cleanHtml(andBuild);
+    cleanJs(andBuild);
+    cleanCss(andBuild);
 };
-
-cleanAll();
 
 // WATCHERS
+var watchAll = function(){
+    // watch dev to rebuild files on change
+    browserSync.watch("./src/property/**/*.{jst,yml,layout}").on("change", buildHtmlProperty);
+    browserSync.watch("./src/patterns/**/*.{layout}").on("change", buildHtmlPages);
+    browserSync.watch("./src/pages/**/*.{jst,yml}").on("change", buildHtmlPages);
+    browserSync.watch("./src/parts/**/*.{jst,yml}").on("change", buildHtmlParts);
+    browserSync.watch("./src/pieces/**/*.{jst,yml}").on("change", buildHtmlPieces);
+    browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.js").on("change", buildJs);
+    browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.css").on("change", buildCss);
+    browserSync.watch("package.json").on("change", cleanAll);
 
-// watch dev to rebuild files on change
-browserSync.watch("./src/property/**/*.{jst,yml,layout}").on("change", buildHtmlProperty);
-browserSync.watch("./src/patterns/**/*.{layout}").on("change", buildHtmlPages);
-browserSync.watch("./src/pages/**/*.{jst,yml}").on("change", buildHtmlPages);
-browserSync.watch("./src/parts/**/*.{jst,yml}").on("change", buildHtmlParts);
-browserSync.watch("./src/pieces/**/*.{jst,yml}").on("change", buildHtmlPieces);
-browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.js").on("change", buildJs);
-browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.css").on("change", buildCss);
-browserSync.watch("package.json").on("change", cleanAll);
+    // watch build folder to reload on changes
+    browserSync.watch("./build/**/*").on("change", browserSync.reload);
 
-// watch build folder to reload on changes
-browserSync.watch("./build/**/*").on("change", browserSync.reload);
+    // launch it
+    browserSync.init({ server: "./build/"});
+};
 
-// Now init the Browsersync server
-browserSync.init({ server: "./build/"});
+// MENU
+var menu = terminalMenu({ width: 29, x: 4, y: 2 });
+menu.reset();
+menu.write('STATICAL\n');
+menu.write('-------------------------\n');
+menu.add('LAUNCH');
+menu.add('BUILD');
+menu.add('CLEAN');
+menu.add('EXIT');
+ 
+menu.on('select', function (label) {
+    menu.close();
+    switch(label) {
+        case 'LAUNCH':
+            cliMessage('DEV', "launching");
+            cleanAll(true);
+            watchAll();
+            break;
+        case 'BUILD':
+            cliMessage('DEV', "building");
+            buildHtmlPieces(); // this kicks of build hierarchy
+            buildJs();
+            buildCss();
+            break;
+        case 'CLEAN':
+            cliMessage('DEV', "cleaning");
+            cleanAll(false);
+            break;
+        case 'EXIT':
+            cliMessage('MENU', "exited");
+            break;
+    }
+});
+
+process.stdin.pipe(menu.createStream()).pipe(process.stdout);
+ 
+process.stdin.setRawMode(true);
+menu.on('close', function () {
+    process.stdin.setRawMode(false);
+    process.stdin.end();
+});
