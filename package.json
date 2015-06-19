@@ -4,7 +4,8 @@
   "description": "Static site generator boilerplate",
   "main": "index.js",
   "scripts": {
-    "dev": "node ./bin/dev.js"
+    "dev": "node ./bin/dev.js",
+    "scaffold": "node ./bin/scaffold.js"
   },
   "author": "Kevin Lint",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "del": "^1.2.0",
     "front-matter": "^1.0.0",
     "fs": "0.0.2",
+    "inquirer": "^0.8.5",
     "node-sass": "^3.1.2",
     "postcss": "^4.1.11",
     "postcss-custom-media": "^4.0.0",

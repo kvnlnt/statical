@@ -2,15 +2,12 @@
 // -----------------------
 // MODULES
 // SHORTCUTS
-// HELPERS
-// BUILDERS
 // CLEANERS
 // WATCHERS
 // MENU
 
 // MODULES
 var terminalMenu = require('terminal-menu');
-var colors = require('colors');
 var browserSync = require("browser-sync").create();
 var del = require('del');
 var frontMatter = require('front-matter');
@@ -27,6 +24,8 @@ var customMedia = require("postcss-custom-media")
 var autoprefixer = require('autoprefixer');
 var cssnext = require('cssnext');
 var csswring = require('csswring');
+var util = require('./util.js');
+
 
 // SHORTCUTS
 var patterns = packageJson.build.patterns;
@@ -34,41 +33,6 @@ var property = packageJson.build.property;
 var pages = packageJson.build.pages;
 var parts = packageJson.build.parts;
 var pieces = packageJson.build.pieces;
-
-// HELPERS
-var getFileContents = function(file) {
-    return fs.existsSync(file) ? fs.readFileSync(file).toString() : '';
-};
-
-var ensureFilePath = function(file, index){
-
-    var path = file.split('/'); path.pop();
-    var len = path.length-1;
-    var directory = path.splice(0, index+1).join('/');
-
-    // if folder not exists, create it
-    var exists = fs.existsSync(directory);
-    if (!exists) {
-        cliMessage('create directory: ', directory);
-        fs.mkdirSync(directory);
-    }
-
-    // if not last element, increment and recurse
-    if(index < len){
-        index += 1;
-        ensureFilePath(file, index);
-    }
-};
-
-var cliMessage = function(action, msg, color){
-    var color = color || 'green';
-    console.log(
-        colors.blue('STATICAL'),
-        ':',
-        eval('colors.'+color)(action),
-        ':',
-        msg);
-};
 
 // BUILDERS
 var buildJs = function(){
@@ -102,7 +66,7 @@ var buildJs = function(){
         });
 
     var concatedFiles = files.map(function(file){
-        return getFileContents(file);
+        return util.getFileContents(file);
     }).join('');
 
     var result = babel.transform(concatedFiles,{ 
@@ -115,8 +79,8 @@ var buildJs = function(){
     // hackily add in sourceMappingUrl due to babel js api not supporting it
     var compiledCode = result.code + '\n//# sourceMappingURL=' + 'scripts.js.map';
 
-    cliMessage("BUILT", "./build/scripts.js");
-    cliMessage("BUILT", "./build/scripts.js.map");
+    util.cliMessage("BUILT", "./build/scripts.js");
+    util.cliMessage("BUILT", "./build/scripts.js.map");
     fs.writeFileSync('./build/scripts.js', compiledCode);
     fs.writeFileSync('./build/scripts.js.map', JSON.stringify(result.map));
 };
@@ -152,14 +116,14 @@ var buildCss = function(){
         });
 
     var concatedFiles = files.map(function(file){
-        return getFileContents(file);
+        return util.getFileContents(file);
     }).join('');
 
     postcss([customMedia(), autoprefixer(), cssnext(), csswring()])
     .process(concatedFiles, { from:'maps/styles.css', to:'styles.css', map:{inline:false} })
     .then(function (result) {
-        cliMessage('BUILT', './build/styles.css');
-        cliMessage('BUILT', './build/styles.css.map');
+        util.cliMessage('BUILT', './build/styles.css');
+        util.cliMessage('BUILT', './build/styles.css.map');
         fs.writeFileSync('./build/styles.css', result.css);
         fs.writeFileSync('./build/styles.css.map', result.map);
     });
@@ -169,21 +133,21 @@ var buildHtml = function(items, path, swigFn, callback) {
     try {
 
         items.forEach(function(item) {
-            var jstFile = getFileContents(path + item + ".jst");
-            var ymlFile = getFileContents(path + item + ".yml");
+            var jstFile = util.getFileContents(path + item + ".jst");
+            var ymlFile = util.getFileContents(path + item + ".yml");
             var htmlFile = path + item + ".html";
             var data = frontMatter(ymlFile);
             var swigCompile = swigFn.compile(jstFile);
             data.attributes.content = data.body;
             var compiled = swigCompile(data.attributes);
             fs.writeFileSync(htmlFile, compiled);
-            cliMessage('BUILT', htmlFile);
+            util.cliMessage('BUILT', htmlFile);
         });
 
         if(callback) callback();
 
     } catch (e) {
-        cliMessage(e);
+        util.cliMessage(e);
     }
 };
 
@@ -193,13 +157,13 @@ var buildHtmlProperty = function(){
     pages.forEach(function(page){
         var htmlFile = './src/pages/' + page + ".html";
         var targetFile = './build/' + page + ".html";
-        var htmlContents = getFileContents(htmlFile);
+        var htmlContents = util.getFileContents(htmlFile);
         var swigCompile = swigProperty.compile(htmlContents);
         var compiled = swigCompile(property);
         var dir = targetFile.split('/');
-        ensureFilePath(targetFile,1);
+        util.ensureFilePath(targetFile,1);
         fs.writeFileSync(targetFile, compiled);
-        cliMessage('BUILT', targetFile);
+        util.cliMessage('BUILT', targetFile);
     });
 };
 
@@ -219,7 +183,7 @@ var buildHtmlPieces = function() {
 var cleanHtml = function(andBuild) {
     del(['./src/**/*.html', './build/**/*.html'], function(err, paths) {
         for(path in paths){
-            cliMessage('DELETED', paths[path], 'yellow');
+            util.cliMessage('DELETED', paths[path], 'yellow');
         }
         if(andBuild) buildHtmlPieces();
     });
@@ -228,7 +192,7 @@ var cleanHtml = function(andBuild) {
 var cleanJs = function(andBuild){
     del(['./build/*.{js,js.map}'], function(err, paths) {
         for(path in paths){
-            cliMessage('DELETED', paths[path], 'yellow');
+            util.cliMessage('DELETED', paths[path], 'yellow');
         }
         if(andBuild) buildJs();
     });
@@ -237,7 +201,7 @@ var cleanJs = function(andBuild){
 var cleanCss = function(andBuild){
     del(['./build/*.{css,css.map}'], function(err, paths) {
         for(path in paths){
-            cliMessage('DELETED', paths[path], 'yellow');
+            util.cliMessage('DELETED', paths[path], 'yellow');
         }
         if(andBuild) buildCss();
     });
@@ -281,23 +245,23 @@ menu.add('EXIT');
 menu.on('select', function (label) {
     switch(label) {
         case 'LAUNCH':
-            cliMessage('DEV', "Launching", "yellow");
+            util.cliMessage('DEV', "Launching", "yellow");
             cleanAll(true);
             watchAll();
             menu.close();
             break;
         case 'BUILD':
-            cliMessage('DEV', "Building", "yellow");
+            util.cliMessage('DEV', "Building", "yellow");
             buildHtmlPieces(); // this kicks of build hierarchy
             buildJs();
             buildCss();
             break;
         case 'CLEAN':
-            cliMessage('DEV', "Cleaning", "yellow");
+            util.cliMessage('DEV', "Cleaning", "yellow");
             cleanAll(false);
             break;
         case 'EXIT':
-            cliMessage('MENU', "Exited", "yellow");
+            util.cliMessage('MENU', "Exited", "yellow");
             menu.close();
             break;
     }
