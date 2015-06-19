@@ -277,27 +277,28 @@ menu.add('LAUNCH');
 menu.add('BUILD');
 menu.add('CLEAN');
 menu.add('EXIT');
- 
+
 menu.on('select', function (label) {
-    menu.close();
     switch(label) {
         case 'LAUNCH':
-            cliMessage('DEV', "launching");
+            cliMessage('DEV', "Launching", "yellow");
             cleanAll(true);
             watchAll();
+            menu.close();
             break;
         case 'BUILD':
-            cliMessage('DEV', "building");
+            cliMessage('DEV', "Building", "yellow");
             buildHtmlPieces(); // this kicks of build hierarchy
             buildJs();
             buildCss();
             break;
         case 'CLEAN':
-            cliMessage('DEV', "cleaning");
+            cliMessage('DEV', "Cleaning", "yellow");
             cleanAll(false);
             break;
         case 'EXIT':
-            cliMessage('MENU', "exited");
+            cliMessage('MENU', "Exited", "yellow");
+            menu.close();
             break;
     }
 });
