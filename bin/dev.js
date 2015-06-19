@@ -2,6 +2,7 @@
 // -----------------------
 // MODULES
 // SHORTCUTS
+// BUILDERS
 // CLEANERS
 // WATCHERS
 // MENU
@@ -24,8 +25,7 @@ var customMedia = require("postcss-custom-media")
 var autoprefixer = require('autoprefixer');
 var cssnext = require('cssnext');
 var csswring = require('csswring');
-var util = require('./util.js');
-
+var util = require('./lib/util.js');
 
 // SHORTCUTS
 var patterns = packageJson.build.patterns;
