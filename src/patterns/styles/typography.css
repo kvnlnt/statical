@@ -1,4 +1,22 @@
+* {
+    font-family: "Trebuchet MS", serif; /* (e.g., Helvetica) */
+    font-size: 1.4rem;
+     color: var(--black);
+}
+
 h1 {
-    margin: 0rem;
     font-size: 2rem;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1.8rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    font-size: 1.4rem;
 }

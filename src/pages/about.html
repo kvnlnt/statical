@@ -3,7 +3,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>About {{@property name}}</title>
+    <title>About | {{@property name}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -13,9 +13,7 @@
     <body>
         <div class="body">
             <div class="header">
-<div class="logo">
-<img src="/images/statical.png"/>
-</div>
+STATICAL
 </div>
             <div class="row">
                 <div class="col col-33"><div class="menu">
@@ -30,7 +28,159 @@
                 <div class="col">
                     <div class="content">
                     <h1>About</h1>
-                    this is about us <strong>stuff</strong>
+                    <p><img src="images/statical.png" alt="Alt text" title="" /></p>
+
+<p>Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead.</p>
+
+<h2>Setup</h2>
+
+<p>Clone this repo and:</p>
+
+<pre><code>npm install &amp; npm run dev
+</code></pre>
+
+<h2>How it works</h2>
+
+<p>Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a <code>Property</code> which contains a <code>Page</code> which contains a <code>Part</code> which contains a <code>Piece</code>. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header <code>Part</code> would be comprised of a header.jst, header.yml, header.js and a header.css file.</p>
+
+<p>The main concept however is that each content tier wraps the tier below it. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).</p>
+
+<h2>Minimal knowledge required</h2>
+
+<p>Front end development is becoming ridiculous - simply too many tools, apis, build systems, plugins, etc. It's a mess. Statical is an attempt to find the balance between a back to basics approach coupled with the raw power of a number of node modules. To use <em>Statical</em> you need to understand the following: </p>
+
+<ul>
+<li>How to use npm</li>
+<li>How <a href="http://paularmstrong.github.io/swig/">swig</a> works (the templating engine)</li>
+<li><a href="http://www.yaml.org/start.html">yml</a> syntax</li>
+</ul>
+
+<h2>Future-proofy</h2>
+
+<p>Statical's build script uses <a href="https://github.com/postcss/postcss">PostCss</a> and <a href="https://babeljs.io/">Babel</a> to transform CSS and Javascript. This means you can both use and learn future syntax today. Also, being "transpilers" means both tools greatly assist in writing less code that is cross browser compatible (there are exceptions) and cleaner. One small example of this is PostCss' "autoprefixer" plugin (we included it in Statical) which allows you to do away with vendor-prefixes all together. If you're not familiar with these tools - each provides plenty of docs. However, you don't even have to give a care, generic js and css work too.</p>
+
+<h2>Structure</h2>
+
+<p>The folder structure looks like this:</p>
+
+<ul>
+<li>bin : <em>task scripts</em>
+<ul><li>dev.js : <em>the main dev/build script</em></li></ul></li>
+<li>build : <em>the build folder!</em>
+<ul><li>images : <em>all your images go here</em></li>
+<li>fonts : <em>fonts go here</em></li></ul></li>
+<li>src : <em>all source code</em>
+<ul><li>patterns : <em>reusable code patterns, library code</em>
+<ul><li>html : <em>html patterns</em></li>
+<li>scripts : <em>js patterns</em></li>
+<li>styles : <em>css patterns</em></li></ul></li>
+<li>property : <em>core app styles and scripts</em></li>
+<li>pages : <em>all pages and their styles and scripts</em></li>
+<li>parts : <em>all parts with their styles and scripts</em></li>
+<li>pieces : <em>all pieces with their styles and scripts</em></li>
+<li>vendor : <em>all vendor styles and scripts</em></li></ul></li>
+</ul>
+
+<h2>Compilation</h2>
+
+<p>The final ./build/script.js file is compiled synchronously. Reading from the package.json file the compilation goes like this:</p>
+
+<ol>
+<li>patterns/scripts</li>
+<li>pieces</li>
+<li>parts</li>
+<li>pages</li>
+<li>property</li>
+</ol>
+
+<p>This means all your library code (like jquery or custom libs) need to go into the patterns folder. And your main application code needs to go into the property folder, running last after all libs, components, etc have been defined. </p>
+
+<p>Compilation for css is similar but moves the property css up after patterns like so:</p>
+
+<ol>
+<li>patterns/styles</li>
+<li>property</li>
+<li>pieces</li>
+<li>parts</li>
+<li>pages</li>
+</ol>
+
+<p>This order allows for a clean cascading heirarchy. First all your library code (like bootstrap, etc) in patterns and all your styles in property are compiled to establish a foundation. Then pieces, parts and pages are styled. This provides a clean hierarchy of overwrites. A <code>Piece</code>, while inheriting whatever base styling is applied can further apply it's own styling with it's code behind file. However, when a piece is included into a <code>Part</code> or <code>Page</code>, those elements can overwrite the <code>Pieces</code> providing contextual styling.</p>
+
+<h2>Scopes</h2>
+
+<p>There are four scopes matching each element type. A custom swig "varControl" has been setup for each. Scopes are accessed inside .jst or .html files via {{@scopename somevariable }}. The four scopes are:</p>
+
+<pre><code>{{@property ...[variable goes here]... }}
+{{@page ...[variable goes here]...}}
+{{@part ...[variable goes here]...}}
+{{@piece ...[variable goes here]... }}
+</code></pre>
+
+<h2>An Example</h2>
+
+<p>Clear as mud? Let's try an example. Let's say you have a page called about-us. It would have two files: a .yml file which will serve as it's configuration/data file and a .jst file which will serve as it's javascript template. They would look like this:</p>
+
+<h3>./src/pages/about-us.yml</h3>
+
+<pre><code>---
+title: About Us
+---
+</code></pre>
+
+<h3>./src/pages/about-us.jst</h3>
+
+<pre><code>&#123;% include "./src/parts/header.html" %&#125;
+...A bunch of stuff about us...
+</code></pre>
+
+<p>This page has a code-behind data file (about-us.yml) with a <em>title</em> property. The title is not being output here - although it could be with a <code>{{@page title }}</code>. Instead the page is including a part called <em>header</em>. Let's take a look at what the <em>header</em> part's files look like:</p>
+
+<h3>./src/parts/header.yml</h3>
+
+<pre><code>---
+leadline: This page is called 
+---
+</code></pre>
+
+<h3>./src/parts/header.jst</h3>
+
+<pre><code>{{@part leadline}} {{@page title }}
+</code></pre>
+
+<p>Notice the two different scopes? <em>@part</em> and <em>@page</em>? Upon compilation a header.html file would be produced that would look like this:</p>
+
+<h3>./src/parts/header.html:</h3>
+
+<pre><code>This page is called {{@page title}}
+</code></pre>
+
+<p>This <em>header.html</em> file would then be included into <em>about-us.jst</em> which would be compiled to a <em>about-us.html</em> page who's content would end up looking like this:</p>
+
+<h3>./src/pages/about-us.html:</h3>
+
+<pre><code>This page is called About Us
+</code></pre>
+
+<p>See how that works?</p>
+
+<h3>This is what happened:</h3>
+
+<ul>
+<li>the <em>header</em> part <em>compiled</em> the <code>{{@part leadline}}</code> block with it's config file and left the <code>{{@page title }}</code> block alone.</li>
+<li>the compiled <em>header</em> part was then included into the <em>about-us</em> page.</li>
+<li>where the <em>about-us</em> page compiled the <code>{{@page title}}</code> blocks with it's config file.</li>
+</ul>
+
+<h2>Make sense?</h2>
+
+<p>With this structure, it's easy to <em>compose</em> a website with parameterized elements. In the example above the header part could be included into any page, outputting whatever title, etc was specified in that page's relative .yml file.</p>
+
+<h2>Thoughts?</h2>
+
+<p>This is an architecture I've been using for over 12 years. It has served me well. With the proliferation of static site generators such as Metalsmith and Jekyll I felt it was time to try my hand at it. If you have any ideas or improvements to Statical, I'd love to hear it. Feel free to make a PR, drop me a line, etc.</p>
+
+
                     </div>
                 </div>
             </div>

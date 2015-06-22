@@ -1,11 +1,12 @@
 :root {
     /* COLORS */
     --white: #f3f3f3;
-    --black: #222222;
+    --black: #333333;
     --light-grey: #E2E2E2;
     --grey: #999999; 
 
     /* DIMENSIONS */
+    --base-font-size: 10px;
     --mobile: 0;
     --mobile-landscape: 700px;
     --tablet: 1024px;
@@ -22,9 +23,10 @@
 html, body {
     margin: 0;
     padding: 0;
+    font-size: var(--base-font-size);
 }
+
 body {
-    font-size: 10px;
     max-width: var(--tablet);
     margin: 0 auto;
 }
