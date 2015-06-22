@@ -45,11 +45,11 @@ inquirer.prompt(questions, function( answers ) {
     var js  = './src/' + root + '/' + answers.entity + '.js';
     var css = './src/' + root + '/' + answers.entity + '.css';
 
-    // update package.json
+    // get package.json and update it
     var packageJson = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf8' }));
     packageJson.build[root].push(answers.entity);
     var updates = {}; updates[root] = packageJson.build[root];
-    var newPackageJson = util.updateJSONpreserveFormat('./package.json', updates);
+    util.updateJSONpreserveFormat('./package.json', updates);
 
     // create files
     if (!fs.existsSync(jst)) {
