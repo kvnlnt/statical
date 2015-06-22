@@ -2,13 +2,14 @@
 var inquirer = require("inquirer");
 var fs = require('fs');
 var util = require('./lib/util.js');
+var packageJson = require('../package.json');
 
 var questions = [
     {
         name: 'type',
         type: 'list',
         message: 'What would you like to scaffold?',
-        choices: ['PIECE', 'PART', 'PAGE','EXIT'],
+        choices: ['PIECE', 'PART', 'PAGE', 'EXIT'],
         default: 'PIECE',
         filter: function(input) {
             if(input === 'EXIT') {
@@ -28,27 +29,29 @@ var questions = [
 ];
 
 inquirer.prompt(questions, function( answers ) {
+
     switch(answers.type) {
         case 'PIECE':
-            var root = 'piece';
+            var root = 'pieces';
             break;
         case 'PART':
             var root = 'parts';
             break;
         case 'PAGE':
-            var root = 'page';
-            break;
-        case 'EXIT':
-            return false;
+            var root = 'pages';
             break;
     }
 
-    var jst = './src/'+root+'/' + answers.entity + '.jst';
-    var js  = './src/'+root+'/' +answers.entity + '.js';
-    var css = './src/'+root+'/' +answers.entity + '.css';
+    // create vars
+    var jst = './src/' + root + '/' + answers.entity + '.jst';
+    var js  = './src/' + root + '/' + answers.entity + '.js';
+    var css = './src/' + root + '/' + answers.entity + '.css';
 
-    console.log(jst, answers);
+    // update package.json
+    packageJson.build[root].push(answers.entity);
+    fs.writeFileSync('./package.json', JSON.stringify(packageJson));
 
+    // create files
     if (!fs.existsSync(jst)) {
         util.ensureFilePath(jst, 0);
         fs.writeFileSync(jst,'');
