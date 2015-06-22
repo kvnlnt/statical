@@ -1,6 +1,7 @@
 // MODULES
 var colors = require('colors');
 var fs = require('fs');
+var extend = require('extend');
 
 // UTILITY
 var util = {};
@@ -37,6 +38,20 @@ util.cliMessage = function(action, msg, color){
         eval('colors.'+color)(action),
         ':',
         msg);
+};
+
+// write to json file while preserving it's formatting
+util.updateJSONpreserveFormat = function(filename, updates){
+    var file = fs.readFileSync(filename, { encoding: 'utf8' });
+    var original = file.toString();
+    var hasTrailingNewline = (/\n\n$/).test(original);
+    var indentMatch = String(original).match(/^[ \t]+/m);
+    var indent = indentMatch ? indentMatch[0] : 2;
+    var json = JSON.parse(original);
+    extend(true, json, updates);
+    var json = new Buffer(JSON.stringify(json, null, indent));
+    fs.writeFileSync('./package.json', json.toString());
+    return json;
 };
 
 module.exports = util;

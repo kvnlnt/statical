@@ -2,7 +2,6 @@
 var inquirer = require("inquirer");
 var fs = require('fs');
 var util = require('./lib/util.js');
-var packageJson = require('../package.json');
 
 var questions = [
     {
@@ -29,7 +28,6 @@ var questions = [
 ];
 
 inquirer.prompt(questions, function( answers ) {
-
     switch(answers.type) {
         case 'PIECE':
             var root = 'pieces';
@@ -48,8 +46,10 @@ inquirer.prompt(questions, function( answers ) {
     var css = './src/' + root + '/' + answers.entity + '.css';
 
     // update package.json
+    var packageJson = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf8' }));
     packageJson.build[root].push(answers.entity);
-    fs.writeFileSync('./package.json', JSON.stringify(packageJson));
+    var updates = {}; updates[root] = packageJson.build[root];
+    var newPackageJson = util.updateJSONpreserveFormat('./package.json', updates);
 
     // create files
     if (!fs.existsSync(jst)) {
