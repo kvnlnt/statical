@@ -6,4 +6,7 @@ links:
     -
         txt: About
         url: /about.html
+    - 
+        txt: Patterns
+        url: /patterns.html
 ---

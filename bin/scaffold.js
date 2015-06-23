@@ -44,11 +44,14 @@ inquirer.prompt(questions, function( answers ) {
     var jst = './src/' + root + '/' + answers.entity + '.jst';
     var js  = './src/' + root + '/' + answers.entity + '.js';
     var css = './src/' + root + '/' + answers.entity + '.css';
+    var yml = './src/' + root + '/' + answers.entity + '.yml';
 
     // get package.json and update it
     var packageJson = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf8' }));
     packageJson.build[root].push(answers.entity);
-    var updates = {}; updates[root] = packageJson.build[root];
+    var updates = {}; 
+    updates.build = {};
+    updates.build[root] = packageJson.build[root];
     util.updateJSONpreserveFormat('./package.json', updates);
 
     // create files
@@ -57,6 +60,7 @@ inquirer.prompt(questions, function( answers ) {
         fs.writeFileSync(jst,'');
         fs.writeFileSync(js,'');
         fs.writeFileSync(css,'');
+        fs.writeFileSync(yml,'');
     } else {
         util.cliMessage('ALERT', answers.entity + ' already exist', 'red');
     }

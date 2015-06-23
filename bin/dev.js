@@ -223,7 +223,7 @@ var watchAll = function(){
     browserSync.watch("./src/pieces/**/*.{jst,yml}").on("change", buildHtmlPieces);
     browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.js").on("change", buildJs);
     browserSync.watch("./src/+(patterns|property|pages|parts|pieces)/**/*.css").on("change", buildCss);
-    browserSync.watch("package.json").on("change", cleanAll);
+    browserSync.watch("./package.json").on("change", cleanAll);
 
     // watch build folder to reload on changes
     browserSync.watch("./build/**/*").on("change", browserSync.reload);

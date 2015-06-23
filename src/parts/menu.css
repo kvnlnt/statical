@@ -3,10 +3,21 @@
     letter-spacing: 2px;
 }
 
+.menu button.hamburger {
+    text-align: right;
+    width:100%;
+    cursor:pointer;
+}
+
+.menu button.hamburger:before { 
+    content:'\2630';
+}
+
 .menu ul {
     margin: 0;
     padding: 0;
     list-style: none;
+    display: none;
 }
 
 .menu ul li a {
@@ -22,4 +33,16 @@
 .menu ul li a:hover {
     color: var(--white);
     background-color: var(--black);
+}
+
+@media (--mobile-landscape-viewport) {
+
+    .menu ul {
+        display: block;
+    }
+
+    .menu button.hamburger {
+        display: none;
+    }
+
 }

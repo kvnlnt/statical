@@ -48,7 +48,8 @@
     },
     "pages": [
       "index",
-      "about"
+      "about",
+      "patterns"
     ],
     "parts": [
       "menu",
@@ -59,8 +60,5 @@
     "pieces": [
       "logo"
     ]
-  },
-  "pieces": [
-    "logo"
-  ]
+  }
 }

@@ -1,2 +1,2 @@
-'use strict';var test=function test(){console.log('this is a test');};test();
+'use strict';var test=function test(){console.log('this is a test');};test();var menuPart=(function(){var btn=document.querySelector('.hamburger');var menuUl=document.querySelector('.menu ul');btn.addEventListener('click', function(){var display=menuUl.style.display === ''?'block':'';menuUl.style.display = display;});})();
 //# sourceMappingURL=scripts.js.map
