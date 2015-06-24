@@ -1,6 +1,10 @@
+/* MOBILE FIRST */
 .header {
     text-align: center;
     border-bottom:1rem solid var(--grey);
     font-size: 5rem;
     padding:2rem;
 }
+
+/* RESPONSIVE */
+/* PRINT */

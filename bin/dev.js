@@ -36,23 +36,23 @@ var pieces = packageJson.build.pieces;
 
 // BUILDERS
 var buildJs = function(){
-    var patternScripts = patterns.scripts.map(function(script){
-        return './src/patterns/scripts/' + script + ".js";
+    var patternScripts = patterns.elements.map(function(script){
+        return './src/patterns/' + script + ".js";
     });
 
-    var propertyScripts = property.scripts.map(function(script){
+    var propertyScripts = property.elements.map(function(script){
         return './src/property/' + script + ".js";
     });
 
-    var pageScripts = pages.map(function(script){
+    var pageScripts = pages.elements.map(function(script){
         return './src/pages/' + script + ".js";
     });
 
-    var partScripts = parts.map(function(script){
+    var partScripts = parts.elements.map(function(script){
         return './src/parts/' + script + ".js";
     });
 
-    var pieceScripts = pieces.map(function(script){
+    var pieceScripts = pieces.elements.map(function(script){
         return './src/pieces/' + script + ".js";
     });
 
@@ -86,23 +86,23 @@ var buildJs = function(){
 };
 
 var buildCss = function(){
-    var patternStyles = patterns.styles.map(function(style){
-        return './src/patterns/styles/' + style + ".css";
+    var patternStyles = patterns.elements.map(function(style){
+        return './src/patterns/' + style + ".css";
     });
 
-    var propertyStyles = property.styles.map(function(style){
+    var propertyStyles = property.elements.map(function(style){
         return './src/property/' + style + ".css";
     });
 
-    var pageStyles = pages.map(function(style){
+    var pageStyles = pages.elements.map(function(style){
         return './src/pages/' + style + ".css";
     });
 
-    var partStyles = parts.map(function(style){
+    var partStyles = parts.elements.map(function(style){
         return './src/parts/' + style + ".css";
     });
 
-    var pieceStyles = pieces.map(function(style){
+    var pieceStyles = pieces.elements.map(function(style){
         return './src/pieces/' + style + ".css";
     });
 
@@ -154,7 +154,7 @@ var buildHtml = function(items, path, swigFn, callback) {
 var buildHtmlProperty = function(){
 
     // swig and copy all pages
-    pages.forEach(function(page){
+    pages.elements.forEach(function(page){
         var htmlFile = './src/pages/' + page + ".html";
         var targetFile = './build/' + page + ".html";
         var htmlContents = util.getFileContents(htmlFile);
@@ -168,15 +168,15 @@ var buildHtmlProperty = function(){
 };
 
 var buildHtmlPages = function(callback) {
-    buildHtml(pages, './src/pages/', swigPage, buildHtmlProperty);
+    buildHtml(pages.elements, './src/pages/', swigPage, buildHtmlProperty);
 };
 
 var buildHtmlParts = function(callback) {
-    buildHtml(parts, './src/parts/', swigPart, buildHtmlPages);
+    buildHtml(parts.elements, './src/parts/', swigPart, buildHtmlPages);
 };
 
 var buildHtmlPieces = function() {
-    buildHtml(pieces, './src/pieces/', swigPiece, buildHtmlParts);
+    buildHtml(pieces.elements, './src/pieces/', swigPiece, buildHtmlParts);
 };
 
 // CLEANERS

@@ -1,3 +1,4 @@
+/* MOBILE FIRST */
 .menu {
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -7,6 +8,11 @@
     text-align: right;
     width:100%;
     cursor:pointer;
+    background-color: var(--white);
+    border:0;
+    font-size: 2rem;
+    line-height: 4rem;
+    padding-right:1.5rem;
 }
 
 .menu button.hamburger:before { 
@@ -30,11 +36,13 @@
     background-color: var(--light-grey);
 }
 
-.menu ul li a:hover {
+.menu ul li a:hover,
+.menu button.hamburger:hover {
     color: var(--white);
     background-color: var(--black);
 }
 
+/* RESPONSIVE */
 @media (--mobile-landscape-viewport) {
 
     .menu ul {
@@ -45,4 +53,11 @@
         display: none;
     }
 
+}
+
+/* PRINT */
+@media print {
+    .menu {
+        display: none;
+    }
 }

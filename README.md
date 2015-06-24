@@ -1,7 +1,8 @@
 ![Alt text](build/images/statical.png)
 
+# Behind the cutting edge on purpose
 
-Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead.
+Simplicity rules. Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead. With a few basic node modules and a "no-net" build script it's easy to create, extend and maintain an information rich static website.
 
 ## Setup
 Clone this repo and:
