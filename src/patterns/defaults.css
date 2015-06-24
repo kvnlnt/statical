@@ -1,0 +1,14 @@
+/* MOBILE FIRST */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: var(--base-font-size);
+}
+
+body {
+    max-width: var(--tablet);
+    margin: 0 auto;
+}
+
+/* RESPONSIVE */
+/* PRINT */

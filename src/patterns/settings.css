@@ -18,15 +18,3 @@
     @custom-media --tablet-viewport (min-width: 1024px);
     @custom-media --desktop-viewport (min-width: 1200px);
 }
-
-/* RESETS */
-html, body {
-    margin: 0;
-    padding: 0;
-    font-size: var(--base-font-size);
-}
-
-body {
-    max-width: var(--tablet);
-    margin: 0 auto;
-}

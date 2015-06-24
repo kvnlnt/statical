@@ -1,3 +1,4 @@
+/* MOBILE FIRST */
 @media (--mobile-landscape-viewport) {
 
     .row {
@@ -23,3 +24,6 @@
     .col-1-4 { width:25%; }
 
 }
+
+/* RESPONSIVE */
+/* PRINT */

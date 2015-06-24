@@ -1,3 +1,4 @@
+/* MOBILE FIRST */
 * {
     font-family: "Trebuchet MS", serif; /* (e.g., Helvetica) */
     font-size: 1.4rem;
@@ -20,3 +21,6 @@ h3 {
 p {
     font-size: 1.4rem;
 }
+
+/* RESPONSIVE */
+/* PRINT */
