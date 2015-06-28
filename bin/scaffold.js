@@ -48,10 +48,10 @@ inquirer.prompt(questions, function( answers ) {
 
     // get package.json and update it
     var packageJson = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf8' }));
-    packageJson.build[root].push(answers.entity);
+    packageJson.build[root].elements.push(answers.entity);
     var updates = {}; 
     updates.build = {};
-    updates.build[root] = packageJson.build[root];
+    updates.build[root] = packageJson.build[root].elements;
     util.updateJSONpreserveFormat('./package.json', updates);
 
     // create files
