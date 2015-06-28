@@ -2,6 +2,8 @@
 var inquirer = require("inquirer");
 var fs = require('fs');
 var util = require('./lib/util.js');
+var extend = require('extend');
+
 
 var questions = [
     {
@@ -28,6 +30,7 @@ var questions = [
 ];
 
 inquirer.prompt(questions, function( answers ) {
+
     switch(answers.type) {
         case 'PIECE':
             var root = 'pieces';
@@ -49,10 +52,7 @@ inquirer.prompt(questions, function( answers ) {
     // get package.json and update it
     var packageJson = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf8' }));
     packageJson.build[root].elements.push(answers.entity);
-    var updates = {}; 
-    updates.build = {};
-    updates.build[root] = packageJson.build[root].elements;
-    util.updateJSONpreserveFormat('./package.json', updates);
+    util.updateJSONpreserveFormat('./package.json', packageJson);
 
     // create files
     if (!fs.existsSync(jst)) {
@@ -64,4 +64,5 @@ inquirer.prompt(questions, function( answers ) {
     } else {
         util.cliMessage('ALERT', answers.entity + ' already exist', 'red');
     }
+
 });

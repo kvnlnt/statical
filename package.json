@@ -41,7 +41,9 @@
             "version": "1.0",
             "name": "statical.com",
             "images": "/images",
-            "elements": ["main"]
+            "elements": [
+                "main"
+            ]
         },
         "pages": {
             "elements": [
