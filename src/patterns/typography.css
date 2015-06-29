@@ -5,13 +5,19 @@
      color: var(--black);
 }
 
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+}
+
 h1 {
     font-size: 2rem;
+    letter-spacing: 0.5rem;
     text-transform: uppercase;
 }
 
 h2 {
     font-size: 1.8rem;
+    letter-spacing: 0.2rem;
 }
 
 h3 {
@@ -23,4 +29,11 @@ p {
 }
 
 /* RESPONSIVE */
+@media (--mobile-landscape-viewport){
+    h1, h2, h3 {
+        text-align: left;
+    }
+}
+
+
 /* PRINT */
