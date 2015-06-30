@@ -8,7 +8,6 @@
 // MENU
 
 // MODULES
-var terminalMenu = require('terminal-menu');
 var browserSync = require("browser-sync").create();
 var del = require('del');
 var frontMatter = require('front-matter');
@@ -26,6 +25,7 @@ var autoprefixer = require('autoprefixer');
 var cssnext = require('cssnext');
 var csswring = require('csswring');
 var util = require('./lib/util.js');
+var inquirer = require("inquirer");
 
 // SHORTCUTS
 var patterns = packageJson.build.patterns;
@@ -233,22 +233,30 @@ var watchAll = function(){
 };
 
 // MENU
-var menu = terminalMenu({ width: 29, x: 4, y: 2 });
-menu.reset();
-menu.write('STATICAL\n');
-menu.write('-------------------------\n');
-menu.add('LAUNCH');
-menu.add('BUILD');
-menu.add('CLEAN');
-menu.add('EXIT');
+var menu = [
+    {
+        name: 'command',
+        type: 'list',
+        message: 'STATICAL',
+        choices: ['LAUNCH', 'BUILD', 'CLEAN', 'EXIT'],
+        default: 'EXIT',
+        filter: function(input) {
+            if(input === 'EXIT') {
+                process.exit();
+            } else {
+                return input;
+            }
+        }
+    }
+];
 
-menu.on('select', function (label) {
-    switch(label) {
+inquirer.prompt(menu, function( answers ) {
+
+    switch(answers.command) {
         case 'LAUNCH':
             util.cliMessage('DEV', "Launching", "yellow");
             cleanAll(true);
             watchAll();
-            menu.close();
             break;
         case 'BUILD':
             util.cliMessage('DEV', "Building", "yellow");
@@ -260,17 +268,6 @@ menu.on('select', function (label) {
             util.cliMessage('DEV', "Cleaning", "yellow");
             cleanAll(false);
             break;
-        case 'EXIT':
-            util.cliMessage('MENU', "Exited", "yellow");
-            menu.close();
-            break;
     }
-});
 
-process.stdin.pipe(menu.createStream()).pipe(process.stdout);
- 
-process.stdin.setRawMode(true);
-menu.on('close', function () {
-    process.stdin.setRawMode(false);
-    process.stdin.end();
 });
