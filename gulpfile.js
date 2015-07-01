@@ -1,14 +1,18 @@
+var autoprefixer = require('autoprefixer');
 var babel = require('gulp-babel');
 var concat = require('gulp-concat');
+var cssnext = require('cssnext');
+var csswring = require('csswring');
+var customMedia = require("postcss-custom-media");
 var gulp = require('gulp');
 var gulpsync = require('gulp-sync')(gulp);
+var gutil = require('gulp-util');
 var postcss = require('gulp-postcss');
+var print = require('gulp-print');
+var rimraf = require('gulp-rimraf');
 var sourcemaps = require('gulp-sourcemaps');
 var swig = require('gulp-swig');
-var addsrc = require('gulp-add-src');
-var rimraf = require('gulp-rimraf');
-var gutil = require('gulp-util');
-var print = require('gulp-print');
+var browserSync = require('browser-sync').create();
 
 gulp.task('js', function() {
     return gulp.src([
@@ -17,9 +21,9 @@ gulp.task('js', function() {
             './src/pages/**/*.js',
             './src/parts/**/*.js',
             './src/pieces/**/*.js'
-        ])
-        .pipe(sourcemaps.init())
-        .pipe(babel())
+        ], { base: './src'}) 
+        .pipe(sourcemaps.init({ loadMaps:true }))
+        .pipe(babel({ compact:true }))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
         }))
@@ -29,20 +33,24 @@ gulp.task('js', function() {
 });
 
 gulp.task('css', function() {
-    var processors = [];
+    var processors = [customMedia(), autoprefixer(), cssnext(), csswring()];
     return gulp.src([
+            './src/patterns/settings.css',
+            './src/patterns/defaults.css',
+            './src/patterns/grid.css',
+            './src/patterns/typography.css',
             './src/patterns/**/*.css',
             './src/pieces/**/*.css',
             './src/parts/**/*.css',
             './src/pages/**/*.css',
             './src/property/**/*.css'
-        ])
-        .pipe(sourcemaps.init())
-        .pipe(postcss(processors))
+        ], { base: './src'})
+        .pipe(sourcemaps.init({ loadMaps:true }))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
         }))
         .pipe(concat('styles.css'))
+        .pipe(postcss(processors))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build'));
 });
@@ -97,8 +105,12 @@ gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages']), fu
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('default',  gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
-    return;
+gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
+
+    browserSync.init({
+        server: "./build"
+    });
+
 });
 
 gulp.task('clean', function() {
