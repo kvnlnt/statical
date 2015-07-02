@@ -13,6 +13,7 @@ var rimraf = require('gulp-rimraf');
 var sourcemaps = require('gulp-sourcemaps');
 var swig = require('gulp-swig');
 var browserSync = require('browser-sync').create();
+var git = require('gulp-git');
 
 gulp.task('js', function() {
     return gulp.src([
@@ -113,6 +114,10 @@ gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages']), fu
 });
 
 gulp.task('build', gulpsync.sync(['clean', 'js', 'css', 'html']));
+
+gulp.task('deploy', function(){
+    git.exec({ args:'subtree push --prefix build origin gh-pages'});
+});
 
 gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
 
