@@ -22,18 +22,18 @@ gulp.task('js', function() {
             './src/parts/**/*.js',
             './src/pieces/**/*.js'
         ], { base: './src'}) 
-        .pipe(sourcemaps.init({ loadMaps:true }))
-        .pipe(babel({ compact:true }))
+        .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
         }))
         .pipe(concat('scripts.js'))
+        .pipe(babel({ compact:true, code:true }))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build'));
 });
 
 gulp.task('css', function() {
-    var processors = [customMedia(), autoprefixer(), cssnext(), csswring()];
+    var processors = [customMedia(), autoprefixer, cssnext(), csswring()];
     return gulp.src([
             './src/patterns/settings.css',
             './src/patterns/defaults.css',
@@ -45,7 +45,7 @@ gulp.task('css', function() {
             './src/pages/**/*.css',
             './src/property/**/*.css'
         ], { base: './src'})
-        .pipe(sourcemaps.init({ loadMaps:true }))
+        .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
         }))
@@ -110,7 +110,6 @@ gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
     browserSync.init({
         server: "./build"
     });
-
 });
 
 gulp.task('clean', function() {
