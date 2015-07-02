@@ -1,5 +1,5 @@
 var menuPart = (function(){
-
+    
     var btn = document.querySelector('.hamburger');
     var menuUl = document.querySelector('.menu ul');
     btn.addEventListener('click', function(){

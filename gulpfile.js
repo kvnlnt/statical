@@ -21,13 +21,18 @@ gulp.task('js', function() {
             './src/pages/**/*.js',
             './src/parts/**/*.js',
             './src/pieces/**/*.js'
-        ], { base: './src'}) 
+        ], {
+            base: './src'
+        })
         .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
         }))
         .pipe(concat('scripts.js'))
-        .pipe(babel({ compact:true, code:true }))
+        .pipe(babel({
+            compact: true,
+            code: true
+        }))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build'));
 });
@@ -44,7 +49,9 @@ gulp.task('css', function() {
             './src/parts/**/*.css',
             './src/pages/**/*.css',
             './src/property/**/*.css'
-        ], { base: './src'})
+        ], {
+            base: './src'
+        })
         .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
@@ -110,6 +117,13 @@ gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
     browserSync.init({
         server: "./build"
     });
+
+    gulp.watch("./src/**/*.js", ['js']);
+    gulp.watch("./src/**/*.css", ['css']);
+    gulp.watch("./src/**/*.jst", ['html']);
+    gulp.watch("./src/**/*.json", ['html']);
+    gulp.watch("./build/*.*").on('change', browserSync.reload);
+
 });
 
 gulp.task('clean', function() {
