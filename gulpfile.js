@@ -112,6 +112,8 @@ gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages']), fu
         .pipe(gulp.dest('./build'));
 });
 
+gulp.task('build', gulpsync.sync(['clean', 'js', 'css', 'html']));
+
 gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
 
     browserSync.init({
@@ -127,7 +129,7 @@ gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
 });
 
 gulp.task('clean', function() {
-    return gulp.src(['./src/**/*.html', './build/*.html', './build/*.js', './build/*.css'], {
+    return gulp.src(['./src/**/*.html', './build/*.html', './build/*.js', './build/*.css', './build/*.map'], {
             read: false
         })
         .pipe(print(function(filepath) {
