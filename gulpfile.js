@@ -14,6 +14,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var swig = require('gulp-swig');
 var browserSync = require('browser-sync').create();
 var git = require('gulp-git');
+var fs = require("fs");
+var statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
 
 gulp.task('js', function() {
     return gulp.src([
@@ -105,7 +107,22 @@ gulp.task('html-pages', function() {
         .pipe(gulp.dest('./src/pages'));
 });
 
-gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages']), function() {
+gulp.task('html-property', function() {
+    var options = {
+        cache: false,
+        load_json: false,
+        locals: statical,
+        varControls: ['{{@property', '}}']
+    };
+    return gulp.src(['./src/pages/**/*.html'])
+        .pipe(swig(options))
+        .pipe(print(function(filepath) {
+            return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
+        }))
+        .pipe(gulp.dest('./src/pages'));
+});
+
+gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
     return gulp.src('./src/pages/*.html')
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' deployed ' + filepath;
