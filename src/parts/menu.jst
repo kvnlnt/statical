@@ -1,8 +1,8 @@
 <div class="menu">
 <button class="hamburger"></button>
 <ul>
-    {% for link in links %}
+    {%part for link in links %}
 	<li><a href="{{@part link.url}}">{{@part link.txt}}</a></li>
-    {% endfor %}
+    {%part endfor %}
 </ul>
 </div>

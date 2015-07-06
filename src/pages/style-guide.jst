@@ -1,16 +1,16 @@
 <!doctype html>
 <html class="no-js" lang="">
-    {% include "../parts/head.html" %}
+    {%page include "../parts/head.html" %}
     <body>
         <div class="body">
-            {% include "../parts/header.html" %}
+            {%page include "../parts/header.html" %}
             <div class="content">
                 <h1>{{@page name }}</h1>
-                {% autoescape false %}{{@page content|safe }}{% endautoescape %}
+                {%page autoescape false %}{{@page content|safe }}{%page endautoescape %}
                 <h2>Menu</h2>
-                {% include "../parts/menu.html" %}
+                {%page include "../parts/menu.html" %}
             </div>
         </div>
-        {% include "../parts/footer-scripts.html" %}
+        {%page include "../parts/footer-scripts.html" %}
     </body>
 </html>

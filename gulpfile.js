@@ -68,6 +68,7 @@ gulp.task('html-pieces', function() {
     var options = {
         cache: false,
         load_json: true,
+        tagControls: ['{%piece', '%}'],
         varControls: ['{{@piece', '}}']
     };
     return gulp.src(['./src/pieces/**/*.jst'])
@@ -82,6 +83,7 @@ gulp.task('html-parts', function() {
     var options = {
         cache: false,
         load_json: true,
+        tagControls: ['{%part', '%}'],
         varControls: ['{{@part', '}}']
     };
     return gulp.src(['./src/parts/**/*.jst'])
@@ -96,6 +98,7 @@ gulp.task('html-pages', function() {
     var options = {
         cache: false,
         load_json: true,
+        tagControls: ['{%page', '%}'],
         varControls: ['{{@page', '}}']
     };
     return gulp.src(['./src/pages/**/*.jst'])
@@ -111,6 +114,7 @@ gulp.task('html-property', function() {
         cache: false,
         load_json: false,
         locals: property,
+        tagControls: ['{%property', '%}'],
         varControls: ['{{@property', '}}']
     };
     return gulp.src(['./src/pages/**/*.html'])
