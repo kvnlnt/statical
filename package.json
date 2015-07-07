@@ -13,6 +13,7 @@
     "csswring": "^3.0.5",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
+    "gulp-changed": "^1.2.1",
     "gulp-concat": "^2.6.0",
     "gulp-notify": "^2.2.0",
     "gulp-postcss": "^5.1.9",

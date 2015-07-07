@@ -14,6 +14,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var swig = require('gulp-swig');
 var browserSync = require('browser-sync').create();
 var fs = require("fs");
+var changed = require('gulp-changed');
 var property = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
 
 gulp.task('js', function() {
@@ -72,9 +73,10 @@ gulp.task('html-pieces', function() {
         varControls: ['{{@piece', '}}']
     };
     return gulp.src(['./src/pieces/**/*.jst'])
+        .pipe(changed('./src/pieces', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
-            return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
+            return gutil.colors.blue('STATICAL') + ' piece ' + filepath;
         }))
         .pipe(gulp.dest('./src/pieces'));
 });
@@ -87,9 +89,10 @@ gulp.task('html-parts', function() {
         varControls: ['{{@part', '}}']
     };
     return gulp.src(['./src/parts/**/*.jst'])
+        .pipe(changed('./src/parts', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
-            return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
+            return gutil.colors.blue('STATICAL') + ' part ' + filepath;
         }))
         .pipe(gulp.dest('./src/parts'));
 });
@@ -102,9 +105,10 @@ gulp.task('html-pages', function() {
         varControls: ['{{@page', '}}']
     };
     return gulp.src(['./src/pages/**/*.jst'])
+        .pipe(changed('./src/pages', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
-            return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
+            return gutil.colors.blue('STATICAL') + ' page ' + filepath;
         }))
         .pipe(gulp.dest('./src/pages'));
 });
@@ -119,21 +123,23 @@ gulp.task('html-property', function() {
     };
     return gulp.src(['./src/pages/**/*.html'])
         .pipe(swig(options))
+        .pipe(changed('./src/pages', {hasChanged: changed.compareSha1Digest}))
         .pipe(print(function(filepath) {
-            return gutil.colors.blue('STATICAL') + ' compiled ' + filepath;
+            return gutil.colors.blue('STATICAL') + ' property ' + filepath;
         }))
         .pipe(gulp.dest('./src/pages'));
 });
 
 gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
     return gulp.src('./src/pages/*.html')
+        .pipe(changed('./build'))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' deployed ' + filepath;
         }))
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build', gulpsync.sync(['clean', 'js', 'css', 'html']));
+gulp.task('build', gulpsync.sync(['js', 'css', 'html']));
 
 gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
 
