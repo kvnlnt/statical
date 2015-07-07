@@ -12,6 +12,7 @@
     "cssnext": "^1.6.0",
     "csswring": "^3.0.5",
     "gulp": "^3.9.0",
+    "gulp-awspublish": "^2.0.2",
     "gulp-babel": "^5.1.0",
     "gulp-changed": "^1.2.1",
     "gulp-concat": "^2.6.0",

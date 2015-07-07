@@ -1,3 +1,15 @@
 {
-    "name":"Statical"
+    "property": {
+        "name": "Statical",
+        "imageUrl": "/images"
+    },
+    "publish": {
+        "publisher": {
+            "region": "[REGION NAME]",
+            "params": {
+                "Bucket": "[BUCKET NAME]"
+            }
+        },
+        "headers": "Cache-Control': 'max-age=315360000, no-transform, public"
+    }
 }

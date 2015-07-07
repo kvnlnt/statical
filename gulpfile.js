@@ -15,8 +15,10 @@ var swig = require('gulp-swig');
 var browserSync = require('browser-sync').create();
 var fs = require("fs");
 var changed = require('gulp-changed');
-var property = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+var awspublish = require('gulp-awspublish');
+var statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
 
+// Compile javascript and deploy to build folder
 gulp.task('js', function() {
     return gulp.src([
             './src/patterns/**/*.js',
@@ -40,6 +42,7 @@ gulp.task('js', function() {
         .pipe(gulp.dest('./build'));
 });
 
+// Compile css and deploy to build folder
 gulp.task('css', function() {
     var processors = [customMedia(), autoprefixer, cssnext(), csswring()];
     return gulp.src([
@@ -65,6 +68,7 @@ gulp.task('css', function() {
         .pipe(gulp.dest('./build'));
 });
 
+// Compile pieces with piece scope
 gulp.task('html-pieces', function() {
     var options = {
         cache: false,
@@ -81,6 +85,7 @@ gulp.task('html-pieces', function() {
         .pipe(gulp.dest('./src/pieces'));
 });
 
+// Compile parts with part scope
 gulp.task('html-parts', function() {
     var options = {
         cache: false,
@@ -97,6 +102,7 @@ gulp.task('html-parts', function() {
         .pipe(gulp.dest('./src/parts'));
 });
 
+// Compile pages with page scope
 gulp.task('html-pages', function() {
     var options = {
         cache: false,
@@ -113,11 +119,12 @@ gulp.task('html-pages', function() {
         .pipe(gulp.dest('./src/pages'));
 });
 
+// Compile pages with property scope
 gulp.task('html-property', function() {
     var options = {
         cache: false,
         load_json: false,
-        locals: property,
+        locals: statical.property,
         tagControls: ['{%property', '%}'],
         varControls: ['{{@property', '}}']
     };
@@ -130,7 +137,8 @@ gulp.task('html-property', function() {
         .pipe(gulp.dest('./src/pages'));
 });
 
-gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
+// Compile all html and deploy to build folder
+gulp.task('html-all', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
     return gulp.src('./src/pages/*.html')
         .pipe(changed('./build'))
         .pipe(print(function(filepath) {
@@ -139,21 +147,12 @@ gulp.task('html', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'htm
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build', gulpsync.sync(['js', 'css', 'html']));
-
-gulp.task('default', gulpsync.sync(['clean', 'js', 'css', 'html']), function() {
-
-    browserSync.init({
-        server: "./build"
-    });
-
-    gulp.watch("./src/**/*.js", ['js']);
-    gulp.watch("./src/**/*.css", ['css']);
-    gulp.watch("./src/**/*.jst", ['html']);
-    gulp.watch("./src/**/*.json", ['html']);
-    gulp.watch("./build/*.*").on('change', browserSync.reload);
+// Compile all css, js and html and deploy to build folder
+gulp.task('build', gulpsync.sync(['js', 'css', 'html-all']), function(){
+    console.log(gutil.colors.blue('STATICAL'), 'build complete');
 });
 
+// Clean all generated files (all html and build folder)
 gulp.task('clean', function() {
     return gulp.src(['./src/**/*.html', './build/*.html', './build/*.js', './build/*.css', './build/*.map'], {
             read: false
@@ -165,3 +164,32 @@ gulp.task('clean', function() {
             force: true
         }));
 });
+
+// Publish to S3 bucket
+gulp.task('publish', function() {
+    // CONFIGURE STATICAL.JSON SETTINGS FIRST TO ENABLE S3
+    // var publisher = awspublish.create(statical.publish.publisher);
+    // var headers = statical.publish.headers;
+    // return gulp.src('./build/**')
+    //     .pipe(awspublish.gzip())
+    //     .pipe(publisher.publish(headers))
+    //     .pipe(publisher.cache())
+    //     .pipe(awspublish.reporter());
+    console.log(gutil.colors.red('NOOP'));
+});
+
+// Start dev server and watches
+gulp.task('serve', gulpsync.sync(['clean', 'js', 'css', 'html-all']), function() {
+    browserSync.init({
+        server: "./build"
+    });
+
+    gulp.watch("./src/**/*.js", ['js']);
+    gulp.watch("./src/**/*.css", ['css']);
+    gulp.watch("./src/**/*.jst", ['html']);
+    gulp.watch("./src/**/*.json", ['html']);
+    gulp.watch("./build/*.*").on('change', browserSync.reload);
+});
+
+// DEFAULT TASK
+gulp.task('default', ['serve']);
