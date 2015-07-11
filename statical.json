@@ -1,4 +1,6 @@
 {
+    "src": "./src",
+    "build": "./build",
     "property": {
         "name": "Statical",
         "imageUrl": "/images"
@@ -11,5 +13,18 @@
             }
         },
         "headers": "Cache-Control': 'max-age=315360000, no-transform, public"
+    },
+    "includeChainUpdates": {
+        "pieces": [
+            "./src/pieces/logo.jst"
+        ],
+        "parts": [
+            "./src/parts/header.jst"
+        ],
+        "pages": [
+            "./src/pages/about.jst",
+            "./src/pages/index.jst",
+            "./src/pages/style-guide.jst"
+        ]
     }
 }

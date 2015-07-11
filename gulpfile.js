@@ -17,6 +17,81 @@ var fs = require("fs");
 var changed = require('gulp-changed');
 var awspublish = require('gulp-awspublish');
 var statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+var path = require('path');
+var addsrc = require('gulp-add-src');
+var crypto = require('crypto');
+var extend = require('extend');
+
+function updateJSONpreserveFormat(filename, updates){
+    var file = fs.readFileSync(filename, { encoding: 'utf8' });
+    var original = file.toString();
+    var hasTrailingNewline = (/\n\n$/).test(original);
+    var indentMatch = String(original).match(/^[ \t]+/m);
+    var indent = indentMatch ? indentMatch[0] : 2;
+    var json = JSON.parse(original);
+    extend(true, json, updates);
+    var json = new Buffer(JSON.stringify(json, null, indent));
+    fs.writeFileSync(filename, json.toString());
+    return json;
+};
+
+function getIncludeTree(filename, tree) {
+    var regVars = /{%(piece|part|page|property)\s*include\s*"(.*)"\s*%}/g;
+    var stats = fs.lstatSync(filename);
+    if (stats.isDirectory()) {
+        fs.readdirSync(filename).map(function(child) {
+            return getIncludeTree(filename + '/' + child, tree);
+        });
+    } else {
+        if (path.extname(filename) === '.jst') {
+            var source = fs.readFileSync(filename).toString();
+            var matches;
+            var includes = [];
+            while ((matches = regVars.exec(source)) !== null) {
+                var filePath = matches[2].replace('.html', '.jst').replace('../', statical.src + "/");
+                includes.push(filePath);
+            }
+            if (includes.length) tree.push({
+                file: filename,
+                includes: includes
+            });
+        }
+    }
+    return tree;
+};
+
+function getIncludeChain(filepath, tree){
+
+    tree.push(filepath);
+
+    var filesAffected = includeTree.filter(function(file) {
+        return file.includes.indexOf(filepath) !== -1;
+    }).map(function(file){
+        return file.file;
+    });
+
+    if(filesAffected.length) {
+        filesAffected.forEach(function(file){
+            getIncludeChain(file, tree);
+        });
+    }
+
+    return tree;
+};
+
+function setIncludeChain(vinyl) {
+    var filepath = statical.src + "/" + vinyl.path.split('/').splice(vinyl.path.split('/').indexOf('src') + 1).join('/');
+    var updatedFiles = getIncludeChain(filepath, []);
+    statical.includeChainUpdates = {
+        pieces: updatedFiles.filter(function(file){ return file.indexOf('./src/pieces/') > -1}),
+        parts: updatedFiles.filter(function(file){ return file.indexOf('./src/parts/') > -1}),
+        pages: updatedFiles.filter(function(file){ return file.indexOf('./src/pages/') > -1})
+    };
+    updateJSONpreserveFormat('statical.json', statical);
+    statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+};
+
+var includeTree = getIncludeTree(statical.src, []);
 
 // Compile javascript and deploy to build folder
 gulp.task('js', function() {
@@ -27,7 +102,7 @@ gulp.task('js', function() {
             './src/parts/**/*.js',
             './src/pieces/**/*.js'
         ], {
-            base: './src'
+            base: statical.src
         })
         .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
@@ -39,7 +114,7 @@ gulp.task('js', function() {
             code: true
         }))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./build'));
+        .pipe(gulp.dest(statical.build));
 });
 
 // Compile css and deploy to build folder
@@ -56,7 +131,7 @@ gulp.task('css', function() {
             './src/pages/**/*.css',
             './src/property/**/*.css'
         ], {
-            base: './src'
+            base: statical.src
         })
         .pipe(sourcemaps.init())
         .pipe(print(function(filepath) {
@@ -65,7 +140,7 @@ gulp.task('css', function() {
         .pipe(concat('styles.css'))
         .pipe(postcss(processors))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./build'));
+        .pipe(gulp.dest(statical.build));
 });
 
 // Compile pieces with piece scope
@@ -77,7 +152,6 @@ gulp.task('html-pieces', function() {
         varControls: ['{{@piece', '}}']
     };
     return gulp.src(['./src/pieces/**/*.jst'])
-        .pipe(changed('./src/pieces', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' piece ' + filepath;
@@ -94,7 +168,6 @@ gulp.task('html-parts', function() {
         varControls: ['{{@part', '}}']
     };
     return gulp.src(['./src/parts/**/*.jst'])
-        .pipe(changed('./src/parts', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' part ' + filepath;
@@ -111,7 +184,6 @@ gulp.task('html-pages', function() {
         varControls: ['{{@page', '}}']
     };
     return gulp.src(['./src/pages/**/*.jst'])
-        .pipe(changed('./src/pages', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' page ' + filepath;
@@ -130,7 +202,9 @@ gulp.task('html-property', function() {
     };
     return gulp.src(['./src/pages/**/*.html'])
         .pipe(swig(options))
-        .pipe(changed('./src/pages', {hasChanged: changed.compareSha1Digest}))
+        .pipe(changed('./src/pages', {
+            hasChanged: changed.compareSha1Digest
+        }))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' property ' + filepath;
         }))
@@ -138,17 +212,66 @@ gulp.task('html-property', function() {
 });
 
 // Compile all html and deploy to build folder
-gulp.task('html-all', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
-    return gulp.src('./src/pages/*.html')
-        .pipe(changed('./build'))
-        .pipe(print(function(filepath) {
-            return gutil.colors.blue('STATICAL') + ' deployed ' + filepath;
-        }))
-        .pipe(gulp.dest('./build'));
+gulp.task('html-pieces-chain', function() {
+
+    statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+
+    return gulp
+    .src(statical.includeChainUpdates.pieces)
+    .pipe(swig({
+        cache: false,
+        load_json: true,
+        tagControls: ['{%piece', '%}'],
+        varControls: ['{{@piece', '}}']
+    }))
+    .pipe(print(function(filepath) {
+        return gutil.colors.blue('STATICAL') + ' piece ' + filepath;
+    }))
+    .pipe(gulp.dest(statical.src + '/pieces'));
+
 });
 
+gulp.task('html-parts-chain', function() {
+
+    statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+
+    return gulp
+    .src(statical.includeChainUpdates.parts)
+    .pipe(swig({
+        cache: false,
+        load_json: true,
+        tagControls: ['{%part', '%}'],
+        varControls: ['{{@part', '}}']
+    }))
+    .pipe(print(function(filepath) {
+        return gutil.colors.blue('STATICAL') + ' part ' + filepath;
+    }))
+    .pipe(gulp.dest(statical.src + '/parts'));
+
+});
+
+gulp.task('html-pages-chain', function() {
+
+    statical = JSON.parse(fs.readFileSync('statical.json', 'utf8'));
+
+    return gulp
+    .src(statical.includeChainUpdates.pages)
+    .pipe(swig({
+        cache: false,
+        load_json: true,
+        tagControls: ['{%page', '%}'],
+        varControls: ['{{@page', '}}']
+    }))
+    .pipe(print(function(filepath) {
+        return gutil.colors.blue('STATICAL') + ' page ' + filepath;
+    }))
+    .pipe(gulp.dest(statical.src + '/pages'));
+
+});
+
+
 // Compile all css, js and html and deploy to build folder
-gulp.task('build', gulpsync.sync(['js', 'css', 'html-all']), function(){
+gulp.task('build', gulpsync.sync(['js', 'css', 'html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
     console.log(gutil.colors.blue('STATICAL'), 'build complete');
 });
 
@@ -180,15 +303,20 @@ gulp.task('publish', function() {
 
 // Start dev server and watches
 gulp.task('serve', gulpsync.sync(['clean', 'js', 'css', 'html-all']), function() {
-    browserSync.init({
-        server: "./build"
-    });
+    // browserSync.init({
+    //     server: "./build"
+    // });
+    // gulp.watch("./src/**/*.js", ['js']);
+    // gulp.watch("./src/**/*.css", ['css']);
+    // gulp.watch("./src/pages/**/*.html", ['html-all']);
+    // gulp.watch("./src/**/*.json", ['html-all']);
+    gulp.watch("./src/**/*.jst", gulpsync.sync['build-include-chain']);
+    // gulp.watch("./build/*.*").on('change', browserSync.reload);
+});
 
-    gulp.watch("./src/**/*.js", ['js']);
-    gulp.watch("./src/**/*.css", ['css']);
-    gulp.watch("./src/**/*.jst", ['html']);
-    gulp.watch("./src/**/*.json", ['html']);
-    gulp.watch("./build/*.*").on('change', browserSync.reload);
+gulp.task('test', function(){
+    gulp.watch("./src/**/*.jst", setIncludeChain);
+    gulp.watch("./statical.json", gulpsync.sync(['html-pieces-chain', 'html-parts-chain', 'html-pages-chain', 'html-property']));
 });
 
 // DEFAULT TASK

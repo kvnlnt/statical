@@ -1,0 +1,30 @@
+- can't watch jst because it references itself
+- can't pass processed files in gulp, it wants to "pipe" things
+- if you pipe a list, they have different compilation contexts
+
++ need to pregenerate include tree
++ on jst change, create include Chain and store in file that can be watched
++ on stored file change, trigger recompilation
++ add list of files to src and compile with correct syntax
+
+function compileTree(vinyl) {
+    var filepath = './src/' + vinyl.path.split('/').splice(vinyl.path.split('/').indexOf('src') + 1).join('/');
+    var updatedFiles = updateTree(filepath, []);
+    var updatedPages = updatedFiles.filter(function(file){ return file.indexOf('./src/pages/')});
+    updatedFiles.forEach(function(file){
+            var folder = file.split('/')[2];
+            var scope = folder.substring(0, folder.length - 1);
+            var options = {
+                cache: false,
+                load_json: true,
+                tagControls: ['{%'+scope, '%}'],
+                varControls: ['{{@'+scope, '}}']
+            };
+            gulp.src(file)
+            .pipe(swig(options))
+            .pipe(print(function(filepath) {
+                return gutil.colors.blue('STATICAL') + ' ' + scope + ' ' + filepath;
+            }))
+            .pipe(gulp.dest('./src/'+folder));
+    });
+};
