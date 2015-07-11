@@ -43,6 +43,16 @@ code {
   white-space:pre-line;
 }
 
+code.inline {
+  display: inline-block;
+  padding:0;
+  margin:0;
+  background: none;
+  border:0;
+  color:var(--black);
+  box-shadow: none;
+}
+
 p, em {
     font-size: 1.8rem;
     color: var(--grey);
@@ -83,7 +93,6 @@ p > blockquote {
         text-align: left;
     }
     p {
-      text-align:justify;
       column-count:2;
       column-gap: 5rem;
       column-rule-style: dotted;

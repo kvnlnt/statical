@@ -165,14 +165,13 @@ gulp.task('clean', function() {
 // Publish to S3 bucket
 gulp.task('publish', function() {
     // CONFIGURE STATICAL.JSON SETTINGS FIRST TO ENABLE S3
-    // var publisher = awspublish.create(statical.publish.publisher);
-    // var headers = statical.publish.headers;
-    // return gulp.src('./build/**')
-    //     .pipe(awspublish.gzip())
-    //     .pipe(publisher.publish(headers))
-    //     .pipe(publisher.cache())
-    //     .pipe(awspublish.reporter());
-    console.log(gutil.colors.red('NOOP'));
+    var publisher = awspublish.create(statical.publish.publisher);
+    var headers = statical.publish.headers;
+    return gulp.src('./build/**')
+        .pipe(awspublish.gzip())
+        .pipe(publisher.publish(headers))
+        .pipe(publisher.cache())
+        .pipe(awspublish.reporter());
 });
 
 // Start dev server and watches

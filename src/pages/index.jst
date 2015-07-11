@@ -11,8 +11,8 @@
                         <h1>{{@page name }}</h1>
                         <p>Simplicity rules. Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead. With a few basic node modules and a no-nonsense build script it's easy to create, extend and maintain an information rich static website.</p>
                         <h2>Setup</h2>
-                        <p>Clone this repo and:</p>
-                        <code>npm install & npm run dev & gulp serve</code>
+                        <code>git clone https://github.com/kvnlnt/statical.git</code>
+                        <code>npm install & gulp serve</code>
                         <h2>How it works</h2>
                         <p>Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a <em>Property</em> which contains a <em>Page</em> which contains a <em>Part</em> which contains a <em>Piece</em>. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header <em>Part</em> would be comprised of a header.jst, header.json, header.js and a header.css file.</p>
                         <p>The main concept however is that each content tier wraps the tier below it. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).</p>
@@ -41,11 +41,11 @@
                         <code>&#123;&#123;@page ... &#125;&#125;</code>
                         <code>&#123;&#123;@part ... &#125;&#125;</code>
                         <code>&#123;&#123;@piece ... &#125;&#125;</code>
-                        <p>Additionall, four matching scopes have been setup for tag controls:</p>
-                        <code>&#123;%@property ... %&#125; &#123;%@property end... %&#125;</code>
-                        <code>&#123;%@page ... %&#125; &#123;%@page end... %&#125;</code>
-                        <code>&#123;%@part ... %&#125; &#123;%@part end... %&#125;</code>
-                        <code>&#123;%@piece ... %&#125; &#123;%@piece end... %&#125;</code>
+                        <p>Additionally, four matching scopes have been setup for tag controls:</p>
+                        <code>&#123;%@property start... %&#125; &#123;%@property end... %&#125;</code>
+                        <code>&#123;%@page start... %&#125; &#123;%@page end... %&#125;</code>
+                        <code>&#123;%@part start... %&#125; &#123;%@part end... %&#125;</code>
+                        <code>&#123;%@piece start... %&#125; &#123;%@piece end... %&#125;</code>
                         
                         <h2>An Example</h2>
                         <p>Clear as mud? Let's try an example. Let's say you have a page called about-us. It would have two files: a .json file which will serve as it's configuration/data file and a .jst file which will serve as it's javascript template. They would look like this:</p>
@@ -56,22 +56,22 @@
                         <code>{% include "./src/parts/header.html" %}
                         ...A bunch of stuff about us...
                         </code>
-                        <p>This page has a code-behind data file (about-us.json) with a title property. The title is not being output here - although it could be with a <em>{{@page title }}</em>. Instead the page is including a part called header. Let's take a look at what the header part's files look like:</p>
+                        <p>This page has a code-behind data file (about-us.json) with a title property. The title is not being output here - although it could be with a <code class="inline">{{ @page title }}</code>. Instead the page is including a part called header. Let's take a look at what the header part's files look like:</p>
                         <h4>./src/parts/header.json</h4>
-                        <code>{ "leadline":"This page is called"}</code>
+                        <code>{ "leadline":"This page is called" }</code>
                         <h4>./src/parts/header.jst</h4>
-                        <code>{{@part leadline}} {{@page title }}</code>
+                        <code>{{@part leadline}} &#123;&#123;@page title &#125;&#125;</code>
                         <p>Notice the two different scopes? @part and @page? Upon compilation a header.html file would be produced that would look like this:</p>
                         <h4>./src/parts/header.html</h4>
-                        <code>This page is called {{@page title}}</code>
+                        <code>This page is called &#123;&#123; @page title &#125;&#125;</code>
                         <p>This header.html file would then be included into about-us.jst which would be compiled to a about-us.html page who's content would end up looking like this:</p>
                         <h4>./src/pages/about-us.html</h4>
                         <code>This page is called About Us</code>
-                        <p>See how that works? The header part compiled the <em>{{@part leadline}}</em> block with it's config file and left the <em>{{@page title }}</em> block alone. Then the compiled header part was included into the about-us page where the about-us page compiled the <em>{{@page title}}</em> blocks with it's own scoped variables.</p>
+                        <p>See how that works? The header part compiled the <code class="inline">{{@part leadline}}</code> block with it's config file and left the <code class="inline">&#123;&#123;@page title&#125;&#125;</code> block alone. Then the compiled header part was included into the about-us page where the about-us page compiled the <em>{{@page title}}</em> blocks with it's own scoped variables.</p>
                         <h2>Make sense?</h2>
-                        <p>With this structure, it's easy to compose a website with parameterized elements. In the example above the header part could be included into any page, outputting whatever title, etc was specified in that page's relative .json file.</p>
+                        <p>With this structure, it's easy to compose a website with parameterized elements. In the example above the header part could be included into any page, outputting whatever title, etc. was specified in that page's relative .json file.</p>
                         <h2>Thoughts?</h2>
-                        <p>This is an architecture I've been using for over 12 years. It has served me well. With the proliferation of static site generators such as Metalsmith and Jekyll I felt it was time to try my hand at it. If you have any ideas or improvements to Statical, I'd love to hear it. Feel free to make a PR, drop me a line, etc.</p>
+                        <p>This is an architecture I've been loosely using in my backend apps for over 12 years. It has served me well. With the proliferation of static site generators such as Metalsmith and Jekyll I felt it was time to try my hand at it with a purely "front-end" approach. This is still a first go and issues will arise I'm sure. I'm hoping that the simplicity in it's structure and conformity to standards will make such issues easily overcome as you bend it to your needs. If you have any ideas or improvements to Statical, I'd love to hear it. Feel free to make a PR, drop me a line, etc.</p>
                     </div>
                 </div>
             </div>

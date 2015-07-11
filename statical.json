@@ -5,11 +5,13 @@
     },
     "publish": {
         "publisher": {
-            "region": "[REGION NAME]",
+            "region": "us-west-2",
             "params": {
-                "Bucket": "[BUCKET NAME]"
+                "Bucket": "statical.website"
             }
         },
-        "headers": "Cache-Control': 'max-age=315360000, no-transform, public"
+        "headers": {
+            "Cache-Control": "max-age=315360000, no-transform, public"
+        }
     }
 }
