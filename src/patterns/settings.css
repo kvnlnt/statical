@@ -1,11 +1,13 @@
 :root {
     /* COLORS */
+    --stark-white: #FFFFFF;
     --white: #f3f3f3;
     --black: #333333;
     --light-grey: #E2E2E2;
     --grey: #999999; 
 
     /* DIMENSIONS */
+    font-size: 10px;
     --base-font-size: 10px;
     --mobile: 0;
     --mobile-landscape: 700px;

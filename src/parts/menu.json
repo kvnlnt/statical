@@ -3,9 +3,6 @@
         "txt": "Home",
         "url": "/"
     }, {
-        "txt": "About",
-        "url": "/about.html"
-    }, {
         "txt": "Style Guide",
         "url": "/style-guide.html"
     }]

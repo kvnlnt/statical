@@ -3,11 +3,11 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Home | Statical</title>
+    <title>Simple + Radical | Statical</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="/styles.css?uuid=1436301719601">
+    <link rel="stylesheet" href="/styles.css?uuid=1436587511247">
 </head>
     <body>
         <div class="body">
@@ -23,22 +23,81 @@
     
 	<li><a href="/">Home</a></li>
     
-	<li><a href="/about.html">About</a></li>
-    
 	<li><a href="/style-guide.html">Style Guide</a></li>
     
 </ul>
 </div></div>
                 <div class="col">
                     <div class="content">
-                    <h1>Home</h1>
-                    Homepage
+                        <h1>Simple + Radical</h1>
+                        <p>Simplicity rules. Statical is a static website generator that uses a simple mnemonic to help you create and maintain a static website with minimal dependencies and little conceptual overhead. With a few basic node modules and a no-nonsense build script it's easy to create, extend and maintain an information rich static website.</p>
+                        <h2>Setup</h2>
+                        <p>Clone this repo and:</p>
+                        <code>npm install & npm run dev & gulp serve</code>
+                        <h2>How it works</h2>
+                        <p>Statical works by treating the content anatomy of a website like that of a russian doll. At the top you have a <em>Property</em> which contains a <em>Page</em> which contains a <em>Part</em> which contains a <em>Piece</em>. You decide how your content should be structured. Following a "code-behind" naming convention, each "entity" you create will optionally have a series of file types that support the element. For example a header <em>Part</em> would be comprised of a header.jst, header.json, header.js and a header.css file.</p>
+                        <p>The main concept however is that each content tier wraps the tier below it. This nested architecture allows you to compose reusable and configurable components in an intuitive and methodical way. This approach naturally facilitates a separation of concerns and avoids a number of other common pitfals (complex build scripts, unnecessary dependencies, high learning curve).</p>
+                        <h2>Key Dependencies</h2>
+                        <ul>
+                            <li><a href="http://gulpjs.com/gulp" target="blank">gulp</a> - build system</li>
+                            <li><a href="http://paularmstrong.github.io/swig" target="blank">swig</a> - html processing</li>
+                            <li><a href="https://github.com/postcss/postcss" target="blank">postcss</a> - css processing</li>
+                            <li><a href="https://babeljs.io" target="blank">babeljs</a> - javascript processing</li>
+                        </ul>
+                        <h2>Future-proofy</h2>
+                        <p>Statical's build script uses the transpilers PostCss and Babel to transform your CSS and Javascript. This means you can both use and learn future syntax today as well as easily intergrate a number of PostCss and Babel's processing plugins. One great example of their advantage is demonstrated with PostCss' <em>autoprefixer</em> which automatically appends vendor prefixes to your css.</p>
+                        <h2>Compilation</h2>
+                        <code>gulp build</code>
+                        <h3>Javacript</h3>
+                        <p>Javascript is compiled in the following order: patterns, pieces, parts, pages, property. This means all your library code (like jquery or custom libs) need to go into the patterns folder. And your main application code needs to go into the property folder, running last after all libs, components, etc have been defined.</p>
+                        
+                        <h3>CSS</h3>
+                        <p>Compilation for css is similar but moves the property css up after patterns like so: patterns, property, pieces, parts, pages. This order allows for a clean cascading heirarchy. First all your library code (like bootstrap, etc) in patterns and all your styles in property are compiled to establish a foundation. Then pieces, parts and pages are styled. This provides a clean hierarchy of overwrites. A <em>Piece</em>, while inheriting whatever base styling is applied can further apply it's own styling with it's code behind file. However, when a piece is included into a <em>Part</em> or <em>Page</em>, those elements can overwrite the <em>Pieces</em> providing contextual styling.</p>
+                        
+                        <h2>Scopes</h2>
+                        <p>There are four scopes matching each element type. A custom swig "varControl" has been setup for each. This means the standard syntax for outputing a variable such as this:</p>
+                        <code>{{ ... }}</code>
+                        <p>...has been altered and split into the following four scopes:</p>
+                        <code>&#123;&#123;@property ... &#125;&#125;</code>
+                        <code>&#123;&#123;@page ... &#125;&#125;</code>
+                        <code>&#123;&#123;@part ... &#125;&#125;</code>
+                        <code>&#123;&#123;@piece ... &#125;&#125;</code>
+                        <p>Additionall, four matching scopes have been setup for tag controls:</p>
+                        <code>&#123;%@property ... %&#125; &#123;%@property end... %&#125;</code>
+                        <code>&#123;%@page ... %&#125; &#123;%@page end... %&#125;</code>
+                        <code>&#123;%@part ... %&#125; &#123;%@part end... %&#125;</code>
+                        <code>&#123;%@piece ... %&#125; &#123;%@piece end... %&#125;</code>
+                        
+                        <h2>An Example</h2>
+                        <p>Clear as mud? Let's try an example. Let's say you have a page called about-us. It would have two files: a .json file which will serve as it's configuration/data file and a .jst file which will serve as it's javascript template. They would look like this:</p>
+                        
+                        <h4>./src/pages/about-us.json</h4>
+                        <code>{ "title":"About" }</code>
+                        <h4>./src/pages/about-us.jst</h4>
+                        <code>{% include "./src/parts/header.html" %}
+                        ...A bunch of stuff about us...
+                        </code>
+                        <p>This page has a code-behind data file (about-us.json) with a title property. The title is not being output here - although it could be with a <em></em>. Instead the page is including a part called header. Let's take a look at what the header part's files look like:</p>
+                        <h4>./src/parts/header.json</h4>
+                        <code>{ "leadline":"This page is called"}</code>
+                        <h4>./src/parts/header.jst</h4>
+                        <code>{{@part leadline}} </code>
+                        <p>Notice the two different scopes? @part and @page? Upon compilation a header.html file would be produced that would look like this:</p>
+                        <h4>./src/parts/header.html</h4>
+                        <code>This page is called </code>
+                        <p>This header.html file would then be included into about-us.jst which would be compiled to a about-us.html page who's content would end up looking like this:</p>
+                        <h4>./src/pages/about-us.html</h4>
+                        <code>This page is called About Us</code>
+                        <p>See how that works? The header part compiled the <em>{{@part leadline}}</em> block with it's config file and left the <em></em> block alone. Then the compiled header part was included into the about-us page where the about-us page compiled the <em></em> blocks with it's own scoped variables.</p>
+                        <h2>Make sense?</h2>
+                        <p>With this structure, it's easy to compose a website with parameterized elements. In the example above the header part could be included into any page, outputting whatever title, etc was specified in that page's relative .json file.</p>
+                        <h2>Thoughts?</h2>
+                        <p>This is an architecture I've been using for over 12 years. It has served me well. With the proliferation of static site generators such as Metalsmith and Jekyll I felt it was time to try my hand at it. If you have any ideas or improvements to Statical, I'd love to hear it. Feel free to make a PR, drop me a line, etc.</p>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-<script src="/scripts.js?uuid=1436301719601"></script>
+            <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script src="/scripts.js?uuid=1436587511247"></script>
 <script>
     (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
     function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -47,5 +106,5 @@
     r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
     ga('create','UA-XXXXX-X','auto');ga('send','pageview');
 </script>
-    </body>
-</html>
+        </body>
+    </html>

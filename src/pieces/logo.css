@@ -5,6 +5,7 @@
     letter-spacing: 10px;
     text-transform: uppercase;
     text-decoration: none;
+    color:var(--black);
 }
 /* RESPONSIVE */
 /* PRINT */

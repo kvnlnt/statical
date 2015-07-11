@@ -77,7 +77,6 @@ gulp.task('html-pieces', function() {
         varControls: ['{{@piece', '}}']
     };
     return gulp.src(['./src/pieces/**/*.jst'])
-        .pipe(changed('./src/pieces', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' piece ' + filepath;
@@ -94,7 +93,6 @@ gulp.task('html-parts', function() {
         varControls: ['{{@part', '}}']
     };
     return gulp.src(['./src/parts/**/*.jst'])
-        .pipe(changed('./src/parts', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' part ' + filepath;
@@ -111,7 +109,6 @@ gulp.task('html-pages', function() {
         varControls: ['{{@page', '}}']
     };
     return gulp.src(['./src/pages/**/*.jst'])
-        .pipe(changed('./src/pages', {extension:'.html'}))
         .pipe(swig(options))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' page ' + filepath;
@@ -186,8 +183,8 @@ gulp.task('serve', gulpsync.sync(['clean', 'js', 'css', 'html-all']), function()
 
     gulp.watch("./src/**/*.js", ['js']);
     gulp.watch("./src/**/*.css", ['css']);
-    gulp.watch("./src/**/*.jst", ['html']);
-    gulp.watch("./src/**/*.json", ['html']);
+    gulp.watch("./src/**/*.jst", ['html-all']);
+    gulp.watch("./src/**/*.json", ['html-all']);
     gulp.watch("./build/*.*").on('change', browserSync.reload);
 });
 

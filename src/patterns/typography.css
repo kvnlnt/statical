@@ -1,37 +1,94 @@
 /* MOBILE FIRST */
 * {
-    font-family: "Trebuchet MS", serif; /* (e.g., Helvetica) */
+    font-family: "Futura", "Century Gothic", serif; /* (e.g., Helvetica) */
     font-size: 1.4rem;
-     color: var(--black);
+    color: var(--grey);
 }
 
 h1, h2, h3, h4, h5, h6 {
     text-align: center;
+    color: var(--black);
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 3rem;
     letter-spacing: 0.5rem;
     text-transform: uppercase;
 }
 
 h2 {
-    font-size: 1.8rem;
-    letter-spacing: 0.2rem;
+    font-size: 2rem;
+    letter-spacing: 0rem;
 }
 
 h3 {
     font-size: 1.5rem;
 }
 
-p {
-    font-size: 1.4rem;
+a:hover {
+  color:var(--black);
+}
+
+code {
+  background: var(--black);
+  color: var(--light-grey);
+  margin: 0;
+  padding: 2rem;
+  font-size: 1.5;
+  font-family: "Courier", serif;
+  quotes: "\201C""\201D""\2018""\2019";
+  box-shadow: 1px 1px 5px var(--light-grey);
+  border-left:10px solid var(--grey);
+  display: block;
+  white-space:pre-line;
+}
+
+p, em {
+    font-size: 1.8rem;
+    color: var(--grey);
+    line-height: 2.1rem;
+    width: 100%;
+    font-family: "Baskerville", "Georgia", serif;
+}
+
+blockquote {
+  background: var(--stark-white);
+  color: var(--grey);
+  margin: 0;
+  padding: 0 2rem;
+  font-size: 2rem;
+  line-height: 5rem;
+  font-family: "Georgia", serif;
+  font-style: oblique;
+  quotes: "\201C""\201D""\2018""\2019";
+  box-shadow: 1px 1px 5px var(--light-grey);
+  border-left:10px solid var(--grey);
+}
+
+blockquote p {
+  display: inline;
+}
+
+p > blockquote {
+    font-size: 1.8rem;
+    color: var(--grey);
+    line-height: 2.1rem;
+    width: 100%;
+    font-family: "Baskerville", "Georgia", serif;
 }
 
 /* RESPONSIVE */
 @media (--mobile-landscape-viewport){
     h1, h2, h3 {
         text-align: left;
+    }
+    p {
+      text-align:justify;
+      column-count:2;
+      column-gap: 5rem;
+      column-rule-style: dotted;
+      column-rule-width: 1px;
+      column-rule-color: var(--light-grey);
     }
 }
 
