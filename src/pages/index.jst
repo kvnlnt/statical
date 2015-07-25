@@ -53,7 +53,7 @@
                         <h4>./src/pages/about-us.json</h4>
                         <code>{ "title":"About" }</code>
                         <h4>./src/pages/about-us.jst</h4>
-                        <code>{% include "./src/parts/header.html" %}
+                        <code>&#123;%page include "./src/parts/header.html" %}
                         ...A bunch of stuff about us...
                         </code>
                         <p>This page has a code-behind data file (about-us.json) with a title property. The title is not being output here - although it could be with a <code class="inline">{{ @page title }}</code>. Instead the page is including a part called header. Let's take a look at what the header part's files look like:</p>
