@@ -136,7 +136,7 @@ gulp.task('html-property', function() {
 
 // Compile all html and deploy to build folder
 gulp.task('html-all', gulpsync.sync(['html-pieces', 'html-parts', 'html-pages', 'html-property']), function() {
-    return gulp.src('./src/pages/*.html')
+    return gulp.src('./src/pages/**/*.html')
         .pipe(changed('./build'))
         .pipe(print(function(filepath) {
             return gutil.colors.blue('STATICAL') + ' deployed ' + filepath;
