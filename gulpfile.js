@@ -151,7 +151,7 @@ gulp.task('build', gulpsync.sync(['js', 'css', 'html-all']), function(){
 
 // Clean all generated files (all html and build folder)
 gulp.task('clean', function() {
-    return gulp.src(['./src/**/*.html', './build/*.html', './build/*.js', './build/*.css', './build/*.map'], {
+    return gulp.src(['./src/**/*.html', './build/**/*.html', './build/*.js', './build/*.css', './build/*.map'], {
             read: false
         })
         .pipe(print(function(filepath) {
