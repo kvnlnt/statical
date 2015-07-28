@@ -10,13 +10,10 @@
     cursor:pointer;
     background-color: var(--white);
     border:0;
-    font-size: 2rem;
+    font-size: 1.2rem;
     line-height: 4rem;
     padding-right:1.5rem;
-}
-
-.menu button.hamburger:before { 
-    content:'\2630';
+    text-transform: uppercase;
 }
 
 .menu ul {
