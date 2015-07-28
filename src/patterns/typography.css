@@ -97,7 +97,7 @@ p > blockquote {
         text-align: left;
     }
     p {
-      column-count:2;
+      column-count:1;
       column-gap: 5rem;
       column-rule-style: dotted;
       column-rule-width: 1px;

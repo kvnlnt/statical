@@ -2,7 +2,11 @@
     "links": [{
         "txt": "Github",
         "url": "https://github.com/kvnlnt/statical"
-    }, {
+    }, 
+    {
+        "txt": "Example Sites",
+        "url": "/example-sites.html"
+    },{
         "txt": "Style Guide",
         "url": "/style-guide.html"
     }]
