@@ -175,7 +175,7 @@ gulp.task('publish', function() {
 });
 
 // Start dev server and watches
-gulp.task('serve', gulpsync.sync(['clean', 'js', 'css', 'html-all']), function() {
+gulp.task('serve', gulpsync.sync(['js', 'css', 'html-all']), function() {
     browserSync.init({
         server: "./build"
     });
