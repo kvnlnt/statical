@@ -3,6 +3,7 @@
     font-family: "Futura", "Century Gothic", serif; /* (e.g., Helvetica) */
     font-size: 1.6rem;
     color: var(--grey);
+    font-weight: normal;
 }
 
 h1, h2, h3, h4, h5, h6 {
