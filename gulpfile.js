@@ -179,7 +179,6 @@ gulp.task('serve', gulpsync.sync(['js', 'css', 'html-all']), function() {
     browserSync.init({
         server: "./build"
     });
-
     gulp.watch("./src/**/*.js", ['js']);
     gulp.watch("./src/**/*.css", ['css']);
     gulp.watch("./src/**/*.jst", ['html-all']);
