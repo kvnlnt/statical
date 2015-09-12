@@ -74,7 +74,7 @@ gulp.task('html-pieces', function() {
         cache: false,
         load_json: true,
         tagControls: ['{%piece', '%}'],
-        varControls: ['{{@piece', '}}']
+        varControls: ['{@piece', '}}']
     };
     return gulp.src(['./src/pieces/**/*.jst'])
         .pipe(swig(options))
@@ -90,7 +90,7 @@ gulp.task('html-parts', function() {
         cache: false,
         load_json: true,
         tagControls: ['{%part', '%}'],
-        varControls: ['{{@part', '}}']
+        varControls: ['{@part', '}}']
     };
     return gulp.src(['./src/parts/**/*.jst'])
         .pipe(swig(options))
@@ -106,7 +106,7 @@ gulp.task('html-pages', function() {
         cache: false,
         load_json: true,
         tagControls: ['{%page', '%}'],
-        varControls: ['{{@page', '}}']
+        varControls: ['{@page', '}}']
     };
     return gulp.src(['./src/pages/**/*.jst'])
         .pipe(swig(options))
@@ -123,7 +123,7 @@ gulp.task('html-property', function() {
         load_json: false,
         locals: statical.property,
         tagControls: ['{%property', '%}'],
-        varControls: ['{{@property', '}}']
+        varControls: ['{@property', '}}']
     };
     return gulp.src(['./src/pages/**/*.html'])
         .pipe(swig(options))
@@ -163,16 +163,16 @@ gulp.task('clean', function() {
 });
 
 // Publish to S3 bucket
-gulp.task('publish', function() {
-    // CONFIGURE STATICAL.JSON SETTINGS FIRST TO ENABLE S3
-    var publisher = awspublish.create(statical.publish.publisher);
-    var headers = statical.publish.headers;
-    return gulp.src('./build/**')
-        .pipe(awspublish.gzip())
-        .pipe(publisher.publish(headers))
-        .pipe(publisher.cache())
-        .pipe(awspublish.reporter());
-});
+// gulp.task('publish', function() {
+//     // CONFIGURE STATICAL.JSON SETTINGS FIRST TO ENABLE S3
+//     var publisher = awspublish.create(statical.publish.publisher);
+//     var headers = statical.publish.headers;
+//     return gulp.src('./build/**')
+//         .pipe(awspublish.gzip())
+//         .pipe(publisher.publish(headers))
+//         .pipe(publisher.cache())
+//         .pipe(awspublish.reporter());
+// });
 
 // Start dev server and watches
 gulp.task('serve', gulpsync.sync(['js', 'css', 'html-all']), function() {

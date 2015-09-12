@@ -5,9 +5,9 @@
     },
     "publish": {
         "publisher": {
-            "region": "us-west-2",
+            "region": "[REGION]",
             "params": {
-                "Bucket": "statical.website"
+                "Bucket": "[BUCKET]"
             }
         },
         "headers": {
