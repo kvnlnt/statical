@@ -1,13 +1,16 @@
 {
-  "name": "statical",
-  "version": "2/0.0",
-  "description": "Static site generator boilerplate",
-  "main": "statical.js",
-  "scripts": {
-    "start": "node statical.js"
-  },
+  "name": "@kvnlnt/statical",
   "author": "Kevin Lint",
-  "license": "ISC",
+  "title": "Statical",
+  "version": "2.0.0",
+  "description": "Static + Radical Static site generator",
+  "main": "./bin/statical.js",
+  "scripts": {},
+  "bin": {
+    "statical": "./bin/statical.js"
+  },
+  "preferGlobal": true,
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "@kvnlnt/spawn-cli": "^1.0.4",
