@@ -4,17 +4,25 @@ const cli = require("@kvnlnt/spawn-cli");
 const chalk = require("chalk");
 const compiler = require("./tasks/compiler");
 
-cli.header(chalk.green("\nSTATICAL"));
+const header = `
+${chalk.red("STATICAL")}
+${chalk.italic("The Radical Static Site Generator")}`;
+
+cli
+    .header(header)
+    .themeColor("red");
 
 cli.command("compile", "build site")
     .callback(compiler.compile);
 
-cli.example("hello --firstName=Fred --lastName=Flinstone", "Print out hello")
-    .command("compile:page", "build page")
+cli.command("compile:page", "build page")
     .argument("page", "p", "page to build")
     .callback(compiler.compilePage);
 
-cli.command("create", "create site")
+cli.command("createSite", "create new site")
+    .callback(compiler.compile);
+
+cli.command("createPage", "create new page")
     .callback(compiler.compile);
 
 cli.example("build-page --page=home", "compiles home page")
