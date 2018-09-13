@@ -2,8 +2,8 @@
 
 const cli = require("@kvnlnt/spawn-cli");
 const chalk = require("chalk");
-const compiler = require("./tasks/compiler");
-const createSite = require("./tasks/createSite");
+const compile = require("./tasks/compile");
+const create = require("./tasks/create");
 
 const header = `
 ${chalk.red("STATICAL")}
@@ -13,21 +13,21 @@ cli
     .header(header)
     .themeColor("red");
 
-cli.command("createSite", "create new site")
+cli.command("create:site", "create new site")
     .argument("name", "n", "site name")
-    .callback(createSite);
+    .callback(create.site);
 
-// cli.command("compile", "build site")
-//     .callback(compiler.compile);
+cli.command("compile:site", "compile entire site")
+    .callback(compile.site);
 
 // cli.command("compile:page", "build page")
 //     .argument("page", "p", "page to build")
-//     .callback(compiler.compilePage);
+//     .callback(compile.compilePage);
 
 
 
 // cli.command("createPage", "create new page")
-//     .callback(compiler.compile);
+//     .callback(compile.compile);
 
 cli
     .command("help", "Prints help")

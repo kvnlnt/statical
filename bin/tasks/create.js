@@ -6,7 +6,7 @@ const options = {
     mode: 0o2775
 };
 
-const createSite = (kwargs) => {
+const site = (kwargs) => {
     if (kwargs.name === null) return console.warn("Name is required");
     const newFolder = `${process.cwd()}/${kwargs.name}`;
     const templatesFolder = __dirname + '/../templates';
@@ -22,6 +22,7 @@ const createSite = (kwargs) => {
         .then(fse.copy(templatesFolder, newFolder))
         .then(res => {
             console.log(chalk.green(kwargs.name, "was created!"));
+            console.log(`run: statical compile`);
         })
         .catch(err => {
             console.warn(chalk.red(err));
@@ -30,5 +31,6 @@ const createSite = (kwargs) => {
 
 };
 
-
-module.exports = createSite;
+module.exports = {
+    site: site
+};
