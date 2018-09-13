@@ -1,0 +1,16 @@
+{
+    "version": "1.0",
+    "name": "mysite.com",
+    "pages": {
+        "/index.html": {
+            "template": "main.html",
+            "partials": {
+                "#layout-menu": "menu.html",
+                "#layout-content": "welcome.html"
+            },
+            "data": {
+                "title": "Hello world"
+            }
+        }
+    }
+}
