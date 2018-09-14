@@ -7,8 +7,8 @@ const options = {
 };
 
 const site = (kwargs) => {
-    if (kwargs.name === null) return console.warn("Name is required");
-    const newFolder = `${process.cwd()}/${kwargs.name}`;
+    if (kwargs.site === null) return console.warn("Name is required");
+    const newFolder = `${process.cwd()}/${kwargs.site}`;
     const templatesFolder = __dirname + '/../templates';
 
     fse
@@ -21,7 +21,7 @@ const site = (kwargs) => {
         .then(fse.ensureDir(newFolder, desiredMode))
         .then(fse.copy(templatesFolder, newFolder))
         .then(res => {
-            console.log(chalk.green(kwargs.name, "was created!"));
+            console.log(chalk.green(kwargs.site, "was created!"));
             console.log(`run: statical compile`);
         })
         .catch(err => {

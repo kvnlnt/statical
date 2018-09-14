@@ -9,8 +9,8 @@
             "file":"/index.html",
             "template": "main.html",
             "partials": {
-                "#layout-menu": "menu.html",
-                "#layout-content": "header.html"
+                ".layout-menu": "menu.html",
+                ".layout-content": "header.html"
             },
             "data": ["home.json"]
         },
@@ -18,8 +18,8 @@
             "file":"/about.html",
             "template": "main.html",
             "partials": {
-                "#layout-menu": "menu.html",
-                "#layout-content": "header.html"
+                ".layout-menu": "menu.html",
+                ".layout-content": "header.html"
             },
             "data": ["about.json"]
         }

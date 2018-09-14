@@ -16,12 +16,12 @@ cli
     .themeColor("red");
 
 if(!isLocalFile) {
-    cli.command("create:site", "create new site")
-    .argument("name", "n", "site name")
+    cli.command("create", "create new site")
+    .argument("site", "n", "site name")
     .callback(create.site);
 }
 
-cli.command("compile:site", "compile entire site")
+cli.command("compile", "compile entire site")
     .callback(compile.site);
 
 // cli.command("compile:page", "build page")
