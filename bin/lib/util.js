@@ -1,5 +1,15 @@
 const util = require('util');
 const fs = require("fs");
+const chalk = require("chalk");
+
+const onError = err => {
+    console.warn(chalk.red(err));
+    process.exit(1);
+};
+
+const log = (label, msg) => {
+    console.log(chalk.green(label), chalk.white(msg));
+};
 
 const readFile = async (f) => {
     return await util.promisify(fs.readFile)(f, 'utf-8');
@@ -21,6 +31,8 @@ const writeFile = async (f, d) => {
 };
 
 module.exports = {
+    log: log,
+    onError: onError,
     toArray: toArray,
     writeFile: writeFile,
     readFile: readFile,

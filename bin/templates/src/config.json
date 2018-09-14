@@ -1,16 +1,27 @@
 {
     "version": "1.0",
     "name": "mysite.com",
+    "global":{
+        "data":["menu.json"]
+    },
     "pages": {
-        "/index.html": {
+        "index": {
+            "file":"/index.html",
             "template": "main.html",
             "partials": {
                 "#layout-menu": "menu.html",
-                "#layout-content": "welcome.html"
+                "#layout-content": "header.html"
             },
-            "data": {
-                "title": "Hello world"
-            }
+            "data": ["home.json"]
+        },
+        "about": {
+            "file":"/about.html",
+            "template": "main.html",
+            "partials": {
+                "#layout-menu": "menu.html",
+                "#layout-content": "header.html"
+            },
+            "data": ["about.json"]
         }
     }
 }
