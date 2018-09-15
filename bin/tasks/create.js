@@ -1,36 +1,39 @@
-const fse = require('fs-extra');
+const fse = require("fs-extra");
 const chalk = require("chalk");
+const util = require("../lib/util");
 
 const desiredMode = 0o2775;
 const options = {
-    mode: 0o2775
+  mode: 0o2775
 };
 
-const site = (kwargs) => {
-    if (kwargs.site === null) return console.warn("Name is required");
-    const newFolder = `${process.cwd()}/${kwargs.site}`;
-    const templatesFolder = __dirname + '/../templates';
+const createPage = () => {};
 
-    fse
-        .pathExists(newFolder)
-        .then(exists => {
-            if (exists) {
-                throw (`${newFolder} already exists`);
-            }
-        })
-        .then(fse.ensureDir(newFolder, desiredMode))
-        .then(fse.copy(templatesFolder, newFolder))
-        .then(res => {
-            console.log(chalk.green(kwargs.site, "was created!"));
-            console.log(`run: statical compile`);
-        })
-        .catch(err => {
-            console.warn(chalk.red(err));
-            process.exit(1);
-        });
+const createSite = name => {
+  if (name === null) return console.warn("--site must be specified");
+  const newFolder = `${process.cwd()}/${name}`;
+  const templatesFolder = __dirname + "/../templates";
 
+  fse
+    .pathExists(newFolder)
+    .then(exists => {
+      if (exists) throw `${newFolder} already exists`;
+    })
+    .then(fse.ensureDir(newFolder, desiredMode))
+    .then(fse.copy(templatesFolder, newFolder))
+    .then(res => {
+      console.log(chalk.green(name, "was created!"));
+      console.log(`run: statical compile`);
+    })
+    .catch(err => {
+      console.warn(chalk.red(err));
+      process.exit(1);
+    });
 };
 
-module.exports = {
-    site: site
+module.exports = kwargs => {
+  if (kwargs.site === false && kwargs.page === false)
+    return util.onError("--site or --page is required");
+  if (kwargs.site !== null) return createSite(kwargs.site);
+  if (kwargs.page !== null) return createPage(kwargs.page);
 };
