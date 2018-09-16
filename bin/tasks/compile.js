@@ -23,7 +23,7 @@ const concatData = async dataFiles => {
   return data;
 };
 
-const compilePage = async (o, dir = util.getConfig().buildDir) => {
+const compilePage = async (o, dir = "public") => {
   const tsStart = process.hrtime();
   return util
     .readFile(`${process.cwd()}/src/templates/${o.template}`)
@@ -50,7 +50,7 @@ const compileSite = async () => {
   for (let k in config.pages) {
     const p = config.pages[k];
     p.data = [...config.global.data, ...p.data];
-    await compilePage(p);
+    await compilePage(p, config.buildDir);
   }
   const tsEnd = process.hrtime(tsStart);
   console.info(chalk.grey(`\u23F1 ${util.hrTimeToMil(tsEnd)}ms`));
@@ -63,6 +63,6 @@ module.exports = (kwargs = {}) => {
     const config = util.getConfig();
     const page = config.pages[kwargs.page];
     if (!page) return util.onError(`Page "${kwargs.page}" not found`);
-    return compilePage(page);
+    return compilePage(page, config.buildDir);
   }
 };

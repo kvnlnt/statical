@@ -4,7 +4,7 @@ const chalk = require("chalk");
 const fse = require("fs-extra");
 
 const onError = err => {
-  console.warn(chalk.red(err));
+  console.warn(`${chalk.red("ERROR")} ${err}`);
   process.exit(1);
 };
 
@@ -13,6 +13,8 @@ const getConfig = () => {
   defConf.global = {};
   defConf.global.data = [];
   const configFile = `${process.cwd()}/src/config.json`;
+  if (!fse.existsSync(configFile))
+    return onError("This isn't a Statical Site.");
   const config = fse.readFileSync(configFile, "utf-8");
   const configParsed = JSON.parse(config);
   const configFix = Object.assign(defConf, configParsed);
