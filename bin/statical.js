@@ -4,6 +4,7 @@ const cli = require("@kvnlnt/spawn-cli");
 const chalk = require("chalk");
 const compile = require("./tasks/compile");
 const create = require("./tasks/create");
+const info = require("./tasks/info");
 const watch = require("./tasks/watch");
 const fse = require("fs-extra");
 const isLocalFile = fse.existsSync(`${process.cwd()}/src/config.json`);
@@ -29,13 +30,16 @@ cli
   .argument("page", "p", "page name", false)
   .callback(compile);
 
-cli.command("watch", "watch src and autocompile").callback(watch);
-
+// cli
+// .command("test", "checks for missing stuff")
+// .argument("page", "p", "page name", false)
+// .callback(compile.site);
 cli
-  .command("test", "checks for missing stuff")
-  .argument("page", "p", "page name", false)
-  .callback(compile.site);
+  .command("info", "site info")
+  .argument("pages", "p", "pages info", false)
+  .callback(info);
 
+cli.command("watch", "watch src and autocompile").callback(watch);
 cli.command("help", "Prints help").callback(cli.printGuide.bind(cli));
 
 // examples

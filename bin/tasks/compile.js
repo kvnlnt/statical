@@ -4,19 +4,6 @@ const util = require("../lib/util");
 const Handlebars = require("handlebars");
 const chalk = require("chalk");
 
-const defaultConfig = {
-  global: {
-    data: []
-  }
-};
-
-const siteConfig = `${process.cwd()}/src/config.json`;
-const getConfig = () =>
-  Object.assign(
-    defaultConfig,
-    JSON.parse(fse.readFileSync(siteConfig, "utf-8"))
-  );
-
 const insertPartialContents = async (template, partials) => {
   for (const p in partials) {
     const file = `${process.cwd()}/src/partials/${partials[p]}`;
@@ -36,8 +23,9 @@ const concatData = async dataFiles => {
   return data;
 };
 
-const compilePage = async o =>
-  util
+const compilePage = async o => {
+  const tsStart = process.hrtime();
+  return util
     .readFile(`${process.cwd()}/src/templates/${o.template}`)
     .then(t => cheerio.load(t))
     .then(t => insertPartialContents(t, o.partials))
@@ -46,23 +34,34 @@ const compilePage = async o =>
     .then(d => (o._data = d))
     .then(x => Handlebars.compile(o._template.html())(o._data))
     .then(s => util.writeFile(`${process.cwd()}/public/${o.file}`, s))
-    .then(x => util.log("\u2713", `${o.file} compiled`))
+    .then(x => process.hrtime(tsStart))
+    .then(x => {
+      const tsEnd = chalk.grey(`${util.hrTimeToMil(x)}ms`);
+      console.info(`${o.file} ${tsEnd}`);
+    })
     .catch(util.onError);
+};
 
 const compileSite = async () => {
-  console.time("\u23F1");
+  const tsStart = process.hrtime();
   await fse.ensureDir(`${process.cwd()}/public`);
-  const config = getConfig();
+  const config = util.getConfig();
   for (let k in config.pages) {
     const p = config.pages[k];
     p.data = [...config.global.data, ...p.data];
     await compilePage(p);
   }
-  console.timeEnd("\u23F1");
+  const tsEnd = process.hrtime(tsStart);
+  console.info(chalk.grey(`\u23F1 ${util.hrTimeToMil(tsEnd)}ms`));
 };
 
 module.exports = (kwargs = {}) => {
   if (kwargs.site === false && kwargs.page === false) return compileSite();
   if (kwargs.site) return compileSite();
-  if (kwargs.page) return compilePage();
+  if (kwargs.page) {
+    const config = util.getConfig();
+    const page = config.pages[kwargs.page];
+    if (!page) return util.onError(`Page "${kwargs.page}" not found`);
+    return compilePage(page);
+  }
 };
