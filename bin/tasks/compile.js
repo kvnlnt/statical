@@ -23,7 +23,7 @@ const concatData = async dataFiles => {
   return data;
 };
 
-const compilePage = async o => {
+const compilePage = async (o, dir = util.getConfig().buildDir) => {
   const tsStart = process.hrtime();
   return util
     .readFile(`${process.cwd()}/src/templates/${o.template}`)
@@ -32,8 +32,9 @@ const compilePage = async o => {
     .then(t => (o._template = t))
     .then(x => concatData(o.data))
     .then(d => (o._data = d))
+    .then(fse.ensureFile(`${process.cwd()}/${dir}/${o.file}`))
     .then(x => Handlebars.compile(o._template.html())(o._data))
-    .then(s => util.writeFile(`${process.cwd()}/public/${o.file}`, s))
+    .then(s => util.writeFile(`${process.cwd()}/${dir}/${o.file}`, s))
     .then(x => process.hrtime(tsStart))
     .then(x => {
       const tsEnd = chalk.grey(`${util.hrTimeToMil(x)}ms`);
