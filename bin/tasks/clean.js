@@ -9,7 +9,7 @@ const clean = (dir = "public") => {
     const page = config.pages[p].file;
     if (fse.existsSync(`${process.cwd()}/${dir}/${page}`)) {
       fse.unlinkSync(`${process.cwd()}/${dir}/${page}`);
-      console.log(`/${dir}${page} removed`);
+      console.log(`${dir}/${page} removed`);
     }
   });
 };
