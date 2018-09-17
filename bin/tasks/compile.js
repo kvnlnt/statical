@@ -43,9 +43,9 @@ const compilePage = async (o, dir = "public") => {
     .catch(util.onError);
 };
 
-const compileSite = async () => {
+const compileSite = async (dir = "public") => {
   const tsStart = process.hrtime();
-  await fse.ensureDir(`${process.cwd()}/public`);
+  await fse.ensureDir(`${process.cwd()}/${dir}`);
   const config = util.getConfig();
   for (let k in config.pages) {
     const p = config.pages[k];
@@ -58,7 +58,7 @@ const compileSite = async () => {
 
 module.exports = (kwargs = {}) => {
   if (kwargs.site === false && kwargs.page === false) return compileSite();
-  if (kwargs.site) return compileSite();
+  if (kwargs.site) return compileSite(config.buildDir);
   if (kwargs.page) {
     const config = util.getConfig();
     const page = config.pages[kwargs.page];

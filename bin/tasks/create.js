@@ -32,8 +32,5 @@ const createSite = name => {
 };
 
 module.exports = kwargs => {
-  if (kwargs.site === false && kwargs.page === false)
-    return util.onError("--site or --page is required");
   if (kwargs.site !== null) return createSite(kwargs.site);
-  if (kwargs.page !== null) return createPage(kwargs.page);
 };

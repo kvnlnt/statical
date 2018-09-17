@@ -2,6 +2,7 @@
 
 const cli = require("@kvnlnt/spawn-cli");
 const chalk = require("chalk");
+const clean = require("./tasks/clean");
 const compile = require("./tasks/compile");
 const create = require("./tasks/create");
 const info = require("./tasks/info");
@@ -18,9 +19,8 @@ cli.header(header).themeColor("red");
 // commands
 if (!isLocalFile) {
   cli
-    .command("new", "create new site or page")
-    .argument("site", "s", "site name", false)
-    .argument("page", "p", "page name", false)
+    .command("new", "create new site")
+    .argument("site", "s", "site name", "mysite.com")
     .callback(create);
 }
 
@@ -29,6 +29,8 @@ cli
   .argument("site", "s", "site (default)", false)
   .argument("page", "p", "page name", false)
   .callback(compile);
+
+cli.command("clean", "remove old files").callback(clean);
 
 // cli
 // .command("test", "checks for missing stuff")
