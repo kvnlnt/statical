@@ -9,16 +9,22 @@ const onError = err => {
 };
 
 const getConfig = () => {
-  const defConf = {};
-  defConf.global = {};
-  defConf.global.data = [];
   const configFile = `${process.cwd()}/src/config.json`;
-  if (!fse.existsSync(configFile))
-    return onError("This isn't a Statical Site.");
+  if (!fse.existsSync(configFile)) return onError("This isn't a Statical Site.");
   const config = fse.readFileSync(configFile, "utf-8");
   const configParsed = JSON.parse(config);
-  const configFix = Object.assign(defConf, configParsed);
-  return configFix;
+  return configParsed;
+};
+
+const updateConfig = (obj) => {
+  const configFile = `${process.cwd()}/src/config.json`;
+  if (!fse.existsSync(configFile)) return onError("This isn't a Statical Site.");
+  fse.writeFileSync(configFile, JSON.stringify(obj, null, 4));
+  return true;
+};
+
+const fileExists = async f => {
+  return await util.promisify(fs.exists)(f, "utf-8");
 };
 
 const log = (label, msg) => {
@@ -53,10 +59,12 @@ const writeFile = async (f, d) => {
 module.exports = {
   getConfig: getConfig,
   hrTimeToMil: hrTimeToMil,
+  fileExists: fileExists,
   log: log,
   onError: onError,
   readFile: readFile,
   readFiles: readFiles,
   toArray: toArray,
+  updateConfig: updateConfig,
   writeFile: writeFile
 };

@@ -1,28 +1,9 @@
 {
-  "version": "1.0",
-  "name": "mysite.com",
-  "buildDir": "public",
-  "global": {
-    "data": ["menu.json"]
-  },
-  "pages": {
-    "index": {
-      "file": "/index.html",
-      "template": "main.html",
-      "partials": {
-        ".layout-menu": "menu.html",
-        ".layout-content": "header.html"
-      },
-      "data": ["home.json"]
-    },
-    "about": {
-      "file": "/about.html",
-      "template": "main.html",
-      "partials": {
-        ".layout-menu": "menu.html",
-        ".layout-content": "header.html"
-      },
-      "data": ["about.json"]
+    "version": "1.0",
+    "name": "mysite.com",
+    "buildDir": "public",
+    "pages": {
+        "home": "home",
+        "about": "about"
     }
-  }
 }

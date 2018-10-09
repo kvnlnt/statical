@@ -1,0 +1,12 @@
+{
+    "mainMenu": [{
+            "label": "home",
+            "link": "./index.html"
+        },
+        {
+            "label": "about",
+            "link": "./about.html"
+        }
+    ]
+
+}

@@ -7,8 +7,6 @@ const options = {
   mode: 0o2775
 };
 
-const createPage = () => {};
-
 const createSite = name => {
   if (name === null) return console.warn("--site must be specified");
   const newFolder = `${process.cwd()}/${name}`;
@@ -31,6 +29,40 @@ const createSite = name => {
     });
 };
 
-module.exports = kwargs => {
-  if (kwargs.site !== null) return createSite(kwargs.site);
+const createPage = name => {
+  if (name === null) return console.warn("--page name must be specified");
+  const newPage = `${process.cwd()}/src/pages/${name}.json`;
+  const template = {
+    file: `/${name}.html`,
+    layout: "main",
+    partials: {},
+    data: {}
+  };
+  const updatedConfig = util.getConfig();
+  updatedConfig.pages[name] = name;
+
+  fse
+    .pathExists(newPage)
+    .then(exists => {
+      if (exists) throw `${newPage} already exists`;
+    })
+    .then(fse.writeFile(newPage, JSON.stringify(template, null, 4)))
+    .then(util.updateConfig(updatedConfig))
+    .then(res => {
+      console.log(chalk.green(name, "was created!"));
+      console.log(`run: statical compile`);
+    })
+    .catch(err => {
+      console.warn(chalk.red(err));
+      process.exit(1);
+    });
+};
+
+module.exports = {
+  site: kwargs => {
+    if (kwargs.site !== null) return createSite(kwargs.site);
+  },
+  page: kwargs => {
+    if (kwargs.page !== null) return createPage(kwargs.page);
+  }
 };

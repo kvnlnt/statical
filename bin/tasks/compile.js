@@ -6,17 +6,22 @@ const chalk = require("chalk");
 
 const insertPartialContents = async (template, partials) => {
   for (const p in partials) {
-    const file = `${process.cwd()}/src/partials/${partials[p]}`;
+    const file = `${process.cwd()}/src/templates/partials/${partials[p]}.html`;
     partials[p] = await util.readFile(file);
     template(p).html(partials[p]);
   }
   return template;
 };
 
-const concatData = async dataFiles => {
-  let data = {};
-  for (const f in dataFiles) {
-    const file = `${process.cwd()}/src/data/${dataFiles[f]}`;
+const concatData = async page => {
+  const globalDataExists = await util.fileExists(`${process.cwd()}/src/data/_global.json`);
+  const globalData = JSON.parse(globalDataExists ? await util.readFile(`${process.cwd()}/src/data/_global.json`) : '{}');
+  let data = {
+    ...globalData,
+    ...page.params
+  };
+  for (const f in page.data) {
+    const file = `${process.cwd()}/src/data/${page.data[f]}`;
     const d = await util.readFile(file);
     data = Object.assign(data, JSON.parse(d));
   }
@@ -26,11 +31,11 @@ const concatData = async dataFiles => {
 const compilePage = async (o, dir = "public") => {
   const tsStart = process.hrtime();
   return util
-    .readFile(`${process.cwd()}/src/templates/${o.template}`)
+    .readFile(`${process.cwd()}/src/templates/layouts/${o.layout}.html`)
     .then(t => cheerio.load(t))
     .then(t => insertPartialContents(t, o.partials))
     .then(t => (o._template = t))
-    .then(x => concatData(o.data))
+    .then(x => concatData(o))
     .then(d => (o._data = d))
     .then(fse.ensureFile(`${process.cwd()}/${dir}/${o.file}`))
     .then(x => Handlebars.compile(o._template.html())(o._data))
@@ -48,8 +53,7 @@ const compileSite = async (dir = "public") => {
   await fse.ensureDir(`${process.cwd()}/${dir}`);
   const config = util.getConfig();
   for (let k in config.pages) {
-    const p = config.pages[k];
-    p.data = [...config.global.data, ...p.data];
+    const p = JSON.parse(await util.readFile(`${process.cwd()}/src/pages/${config.pages[k]}.json`));
     await compilePage(p, config.buildDir);
   }
   const tsEnd = process.hrtime(tsStart);
@@ -63,6 +67,7 @@ module.exports = (kwargs = {}) => {
     const config = util.getConfig();
     const page = config.pages[kwargs.page];
     if (!page) return util.onError(`Page "${kwargs.page}" not found`);
-    return compilePage(page, config.buildDir);
+    const p = JSON.parse(fse.readFileSync(`${process.cwd()}/src/pages/${config.pages[kwargs.page]}.json`));
+    return compilePage(p, config.buildDir);
   }
 };
