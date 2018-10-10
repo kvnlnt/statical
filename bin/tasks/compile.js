@@ -21,7 +21,7 @@ const concatData = async page => {
     ...page.params
   };
   for (const f in page.data) {
-    const file = `${process.cwd()}/src/data/${page.data[f]}`;
+    const file = `${process.cwd()}/src/data/${page.data[f]}.json`;
     const d = await util.readFile(file);
     data = Object.assign(data, JSON.parse(d));
   }
@@ -43,7 +43,7 @@ const compilePage = async (o, dir = "public") => {
     .then(x => process.hrtime(tsStart))
     .then(x => {
       const tsEnd = chalk.grey(`${util.hrTimeToMil(x)}ms`);
-      console.info(`${o.file} ${tsEnd}`);
+      console.info(chalk.green("compiled"), `${dir}/${o.file} ${tsEnd}`);
     })
     .catch(util.onError);
 };

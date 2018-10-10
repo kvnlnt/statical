@@ -2,7 +2,7 @@
   "name": "@kvnlnt/statical",
   "author": "Kevin Lint",
   "title": "Statical",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "The Radical Static Site Generator",
   "main": "./bin/statical.js",
   "scripts": {},
@@ -13,13 +13,12 @@
   "preferGlobal": true,
   "license": "MIT",
   "dependencies": {
-    "handlebars": "^4.0.12"
-  },
-  "devDependencies": {
     "@kvnlnt/spawn-cli": "^1.0.9",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
-    "fs-extra": "^7.0.0"
+    "chokidar": "^2.0.4",
+    "fs-extra": "^7.0.0",
+    "handlebars": "^4.0.12"
   },
   "repository": {
     "type": "git",

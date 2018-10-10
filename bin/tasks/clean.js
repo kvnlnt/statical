@@ -6,11 +6,17 @@ const compile = require("./compile");
 const clean = (dir = "public") => {
   const config = util.getConfig();
   Object.keys(config.pages).forEach(p => {
-    const page = config.pages[p].file;
+    const tsStart = process.hrtime();
+    const page = JSON.parse(fse.readFileSync(`${process.cwd()}/src/pages/${config.pages[p]}.json`)).file;
     if (fse.existsSync(`${process.cwd()}/${dir}/${page}`)) {
       fse.unlinkSync(`${process.cwd()}/${dir}/${page}`);
-      console.log(`${dir}/${page} removed`);
+      const tsEnd = chalk.grey(`${util.hrTimeToMil(process.hrtime(tsStart))}ms`);
+      console.log(chalk.red('removed'), `${dir}/${page} ${tsEnd}`);
     }
+  });
+  compile({
+    site: false,
+    page: false
   });
 };
 
