@@ -16,6 +16,15 @@ const getConfig = () => {
   return configParsed;
 };
 
+const getPageConfig = (p) => {
+  return JSON.parse(
+    fs.readFileSync(
+      `${process.cwd()}/src/pages/${p}.json`,
+      "utf-8"
+    )
+  )
+};
+
 const updateConfig = (obj) => {
   const configFile = `${process.cwd()}/src/config.json`;
   if (!fse.existsSync(configFile)) return onError("This isn't a Statical Site.");
@@ -58,6 +67,7 @@ const writeFile = async (f, d) => {
 
 module.exports = {
   getConfig: getConfig,
+  getPageConfig: getPageConfig,
   hrTimeToMil: hrTimeToMil,
   fileExists: fileExists,
   log: log,

@@ -1,5 +1,5 @@
 {
-    "file": "/about.html",
+    "file": "about.html",
     "layout": "main",
     "partials": {
         ".layout-menu": "menu",

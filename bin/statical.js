@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const cli = require("@kvnlnt/spawn-cli");
+const cli = require("@kvnlnt/spawn");
 const chalk = require("chalk");
 const clean = require("./tasks/clean");
 const compile = require("./tasks/compile");
@@ -11,37 +11,44 @@ const watch = require("./tasks/watch");
 const fse = require("fs-extra");
 const isLocalFile = fse.existsSync(`${process.cwd()}/src/config.json`);
 const header = `
-${chalk.red("Statical")}
+${chalk.magenta("STATICAL")}
 ${chalk.dim("The Radical Static Site Generator")}`;
 
 // setup
-cli.header(header).themeColor("red");
+cli.header(header).themeColor("magenta");
 
 // commands
 if (!isLocalFile) {
   cli
     .command("create", "create new site")
     .argument("site", "s", "site name", "mysite.com")
-    .callback(create.site);
+    .callback(create.site)
+    .example("statical create --s=newsite.com", "scaffolds new site");
 } else {
   cli
     .command("create", "create new page")
     .argument("page", "p", "page name", "example")
-    .callback(create.page);
+    .callback(create.page)
+    .example("statical create --p=newpage", "scaffolds new page");
 
   cli
     .command("remove", "remove page")
     .argument("page", "p", "page name", "example")
-    .callback(remove.page);
+    .callback(remove.page)
+    .example("statical remove --p=newpage", "removes page");
 }
 
 cli
   .command("compile", "compile site or page")
   .argument("site", "s", "site (default)", false)
   .argument("page", "p", "page name", false)
-  .callback(compile);
+  .callback(compile)
+  .example("statical compile --p=newpage", "compiles page");
 
-cli.command("clean", "remove old files").callback(clean);
+cli
+  .command("clean", "remove old files")
+  .callback(clean)
+  .example("statical clean");
 
 // cli
 // .command("test", "checks for missing stuff")
@@ -53,16 +60,12 @@ cli
   .argument("pages", "p", "pages info", false)
   .callback(info);
 
-cli.command("watch", "watch src and autocompile").callback(watch);
-cli.command("help", "Prints help").callback(cli.printGuide.bind(cli));
+cli
+  .command("watch", "watch src and autocompile")
+  .callback(watch)
+  .example("statical watch", "watch files for changes");
 
-// examples
-cli.example("statical new --site=newsite.com", "scaffolds out new site");
-cli.example("statical compile", "compiles entire site");
-cli.example("statical compile --page=about", "compiles about page");
-cli.example("statical test", "tests site for missing data");
-cli.example("statical test --page=about", "tests about page for missing data");
-cli.example("statical watch", "watch files for changes");
+cli.command("help", "Prints help").callback(cli.printGuide);
 
 // boot
-cli.defaultCommand("help").start();
+cli.defaultCommand("help").run();

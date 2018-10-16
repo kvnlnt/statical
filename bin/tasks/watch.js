@@ -2,42 +2,45 @@ const chalk = require("chalk");
 const util = require("../lib/util");
 const fs = require("fs");
 const compile = require("./compile");
+const chokidar = require("chokidar");
 
-const handleFileChange = (evt, filename) => {
+const normalizePath = p => p.replace(/[\/\\]/g, "/");
+
+const createWatchFileList = () => {
+  const fileAssembly = [];
   const config = util.getConfig();
-  const templateChanged = filename.indexOf("templates/") === 0;
-  const partialsChanged = filename.indexOf("partials/") === 0;
-  const dataChanged = filename.indexOf("data/") === 0;
-
-  // individual pages
-  Object.keys(config.pages).forEach(p => {
-    if (templateChanged) {
-      if (config.pages[p].template === filename.replace("templates/", "")) {
-        compile({ page: p });
-      }
-    }
-    if (partialsChanged) {
-      Object.keys(config.pages[p].partials).forEach(pp => {
-        if (
-          config.pages[p].partials[pp] === filename.replace("partials/", "")
-        ) {
-          compile({ page: p });
-        }
-      });
-    }
-    if (dataChanged) {
-      if (config.pages[p].data.indexOf(filename.replace("data/", "")) > -1) {
-        compile({ page: p });
-      }
-    }
+  Object.keys(config.pages).forEach(i => {
+    const pageConfig = util.getPageConfig(config.pages[i]);
+    const pageFiles = [
+      `${process.cwd()}/src/data/_global.json`,
+      `${process.cwd()}/src/pages/${i}.json`,
+      ...Object.keys(pageConfig.partials).map(
+        i => `${process.cwd()}/src/templates/partials/${pageConfig.partials[i]}.html`
+      ),
+      `${process.cwd()}/src/templates/layouts/${pageConfig.layout}.html`,
+      ...pageConfig.data.map(i => `${process.cwd()}/src/data/${i}.json`)
+    ];
+    fileAssembly.push({
+      page: i,
+      files: pageFiles.map(i => normalizePath(i))
+    });
   });
+  return fileAssembly;
+};
 
-  // if global data is updated, recompile site
-  if (config.global.data.indexOf(filename.replace("data/", "")) > -1) {
-    compile({ site: true });
-  }
+const handleFileChange = (fa, config, filename) => {
+  const normalizedPathing = filename.replace(/[\/\\]/g, "/");
+  console.log(chalk.red("changed"), filename);
+  fa.forEach(i => {
+    if (i.files.indexOf(normalizedPathing) > -1) compile({
+      page: i.page
+    });
+  });
 };
 
 module.exports = kwargs => {
-  fs.watch(`${process.cwd()}/src`, { recursive: true }, handleFileChange);
+  const wfl = createWatchFileList();
+  const config = util.getConfig();
+  var watcher = chokidar.watch(`${process.cwd()}/src`);
+  watcher.on("change", handleFileChange.bind(this, wfl, config));
 };
