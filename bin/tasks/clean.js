@@ -20,7 +20,8 @@ const clean = (dir = "public") => {
   });
 };
 
-module.exports = kwargs => {
+module.exports = function (kwargs) {
+  if (kwargs.help) return this.printCommandGuide("clean");
   const config = util.getConfig();
   clean(config.buildDir);
 };

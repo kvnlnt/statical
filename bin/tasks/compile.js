@@ -60,7 +60,8 @@ const compileSite = async (dir = "public") => {
   console.info(chalk.grey(`\u23F1 ${util.hrTimeToMil(tsEnd)}ms`));
 };
 
-module.exports = (kwargs = {}) => {
+module.exports = function (kwargs = {}) {
+  if (kwargs.help) return this.printCommandGuide("compile");
   if (kwargs.site === false && kwargs.page === false) return compileSite();
   if (kwargs.site) return compileSite(config.buildDir);
   if (kwargs.page) {

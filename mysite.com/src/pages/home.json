@@ -1,0 +1,12 @@
+{
+    "file": "index.html",
+    "layout": "main",
+    "partials": {
+        ".layout-menu": "menu",
+        ".layout-content": "header"
+    },
+    "params": {
+        "title": "Home"
+    },
+    "data": []
+}

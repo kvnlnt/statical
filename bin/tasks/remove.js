@@ -22,7 +22,8 @@ const removePage = name => {
 };
 
 module.exports = {
-    page: kwargs => {
+    page: function (kwargs) {
+        if (kwargs.help) return this.printCommandGuide("remove");
         if (kwargs.page !== null) return removePage(kwargs.page);
     }
 }

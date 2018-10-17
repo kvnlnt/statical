@@ -38,7 +38,8 @@ const handleFileChange = (fa, config, filename) => {
   });
 };
 
-module.exports = kwargs => {
+module.exports = function (kwargs) {
+  if (kwargs.help) return this.printCommandGuide("watch");
   const wfl = createWatchFileList();
   const config = util.getConfig();
   var watcher = chokidar.watch(`${process.cwd()}/src`);

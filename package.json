@@ -2,7 +2,7 @@
   "name": "@kvnlnt/statical",
   "author": "Kevin Lint",
   "title": "Statical",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "The Radical Static Site Generator",
   "main": "./bin/statical.js",
   "scripts": {},

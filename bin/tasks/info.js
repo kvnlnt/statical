@@ -7,6 +7,7 @@ const getPageInfo = () => {
   console.log(Object.keys(config.pages).join('\n'));
 };
 
-module.exports = kwargs => {
+module.exports = function (kwargs) {
+  if (kwargs.help) return this.printCommandGuide("info");
   if (kwargs.pages) getPageInfo();
 };

@@ -59,10 +59,12 @@ const createPage = name => {
 };
 
 module.exports = {
-  site: kwargs => {
+  site: function (kwargs) {
+    if (kwargs.help) return this.printCommandGuide("create");
     if (kwargs.site !== null) return createSite(kwargs.site);
   },
-  page: kwargs => {
+  page: function (kwargs) {
+    if (kwargs.help) return this.printCommandGuide("create");
     if (kwargs.page !== null) return createPage(kwargs.page);
   }
 };

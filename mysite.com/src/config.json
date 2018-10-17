@@ -1,0 +1,9 @@
+{
+    "version": "1.0",
+    "name": "mysite.com",
+    "buildDir": "public",
+    "pages": {
+        "home": "home",
+        "about": "about"
+    }
+}
