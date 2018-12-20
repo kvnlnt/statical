@@ -33,7 +33,7 @@ Open up the site's `index.html` file in a browser. You're on your way.
 The entire app is made up of the following:
 
 - `/public` - the place where pages are auto generated to as well as the place to keep your static files
-- `/src/config.json` - global config and registry of pages
+- `/src/statical.json` - global config and registry of pages
 - `/src/pages/*.json` - page level configuration and data
 - `/src/data/*.json` - a place to keep reusable data
 - `/src/templates/layouts/*.html` - main layout templates

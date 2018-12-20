@@ -9,25 +9,24 @@ const onError = err => {
 };
 
 const getConfig = () => {
-  const configFile = `${process.cwd()}/src/config.json`;
-  if (!fse.existsSync(configFile)) return onError("This isn't a Statical Site.");
+  const configFile = `${process.cwd()}/src/statical.json`;
+  if (!fse.existsSync(configFile))
+    return onError("This isn't a Statical Site.");
   const config = fse.readFileSync(configFile, "utf-8");
   const configParsed = JSON.parse(config);
   return configParsed;
 };
 
-const getPageConfig = (p) => {
+const getPageConfig = p => {
   return JSON.parse(
-    fs.readFileSync(
-      `${process.cwd()}/src/pages/${p}.json`,
-      "utf-8"
-    )
-  )
+    fs.readFileSync(`${process.cwd()}/src/pages/${p}.json`, "utf-8")
+  );
 };
 
-const updateConfig = (obj) => {
-  const configFile = `${process.cwd()}/src/config.json`;
-  if (!fse.existsSync(configFile)) return onError("This isn't a Statical Site.");
+const updateConfig = obj => {
+  const configFile = `${process.cwd()}/src/statical.json`;
+  if (!fse.existsSync(configFile))
+    return onError("This isn't a Statical Site.");
   fse.writeFileSync(configFile, JSON.stringify(obj, null, 4));
   return true;
 };

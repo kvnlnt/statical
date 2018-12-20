@@ -9,7 +9,7 @@ const remove = require("./tasks/remove");
 const info = require("./tasks/info");
 const watch = require("./tasks/watch");
 const fse = require("fs-extra");
-const isLocalFile = fse.existsSync(`${process.cwd()}/src/config.json`);
+const isLocalFile = fse.existsSync(`${process.cwd()}/src/statical.json`);
 const header = `
 ${chalk.magenta("STATICAL")}
 ${chalk.dim("The Radical Static Site Generator")}`;
@@ -65,9 +65,7 @@ cli
   .callback(watch)
   .example("statical watch", "watch files for changes");
 
-cli
-  .command("help", "Prints help")
-  .callback(cli.printGuide);
+cli.command("help", "Prints help").callback(cli.printGuide);
 
 // boot
 cli.defaultCommand("help").run();
