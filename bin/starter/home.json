@@ -1,0 +1,17 @@
+{
+  "output": "index.html",
+  "layout": "templates/main.html",
+  "partials": [
+    {
+      "element": ".layout-menu",
+      "source": "templates/_menu.html"
+    },
+    {
+      "element": ".layout-content",
+      "source": "templates/_header.html",
+      "data": {
+        "title": "Homepage"
+      }
+    }
+  ]
+}

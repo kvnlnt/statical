@@ -12,13 +12,14 @@ const createWatchFileList = () => {
   Object.keys(config.pages).forEach(i => {
     const pageConfig = util.getPageConfig(config.pages[i]);
     const pageFiles = [
-      `${process.cwd()}/src/data/_global.json`,
-      `${process.cwd()}/src/pages/${i}.json`,
+      `${process.cwd()}/data/_global.json`,
+      `${process.cwd()}/pages/${i}.json`,
       ...Object.keys(pageConfig.partials).map(
-        i => `${process.cwd()}/src/templates/partials/${pageConfig.partials[i]}.html`
+        i =>
+          `${process.cwd()}/templates/partials/${pageConfig.partials[i]}.html`
       ),
-      `${process.cwd()}/src/templates/layouts/${pageConfig.layout}.html`,
-      ...pageConfig.data.map(i => `${process.cwd()}/src/data/${i}.json`)
+      `${process.cwd()}/templates/layouts/${pageConfig.layout}.html`,
+      ...pageConfig.data.map(i => `${process.cwd()}/data/${i}.json`)
     ];
     fileAssembly.push({
       page: i,
@@ -30,18 +31,19 @@ const createWatchFileList = () => {
 
 const handleFileChange = (fa, config, filename) => {
   const normalizedPathing = filename.replace(/[\/\\]/g, "/");
-  console.log(chalk.red("changed"), filename);
+  console.log(chalk.magenta("changed"), filename);
   fa.forEach(i => {
-    if (i.files.indexOf(normalizedPathing) > -1) compile({
-      page: i.page
-    });
+    if (i.files.indexOf(normalizedPathing) > -1)
+      compile({
+        page: i.page
+      });
   });
 };
 
-module.exports = function (kwargs) {
+module.exports = function(kwargs) {
   if (kwargs.help) return this.printCommandGuide("watch");
   const wfl = createWatchFileList();
   const config = util.getConfig();
-  var watcher = chokidar.watch(`${process.cwd()}/src`);
+  var watcher = chokidar.watch(`${process.cwd()}`);
   watcher.on("change", handleFileChange.bind(this, wfl, config));
 };

@@ -10,7 +10,7 @@ const options = {
 const createSite = name => {
   if (name === null) return console.warn("--site must be specified");
   const newFolder = `${process.cwd()}/${name}`;
-  const templatesFolder = __dirname + "/../templates";
+  const starterFolder = __dirname + "/../starter";
 
   fse
     .pathExists(newFolder)
@@ -18,53 +18,56 @@ const createSite = name => {
       if (exists) throw `${newFolder} already exists`;
     })
     .then(fse.ensureDir(newFolder, desiredMode))
-    .then(fse.copy(templatesFolder, newFolder))
+    .then(fse.copy(starterFolder, newFolder))
     .then(res => {
       console.log(chalk.green(name, "was created!"));
       console.log(`run: statical compile`);
     })
     .catch(err => {
-      console.warn(chalk.red(err));
+      console.warn(chalk.magenta(err));
       process.exit(1);
     });
 };
 
-const createPage = name => {
-  if (name === null) return console.warn("--page name must be specified");
-  const newPage = `${process.cwd()}/src/pages/${name}.json`;
+const createPage = (name = "new", dir = "/") => {
+  const config = util.getConfig();
+  dir = dir || "/";
+  const newPage = `${process.cwd()}${dir}${name}.json`;
   const template = {
-    file: `/${name}.html`,
-    layout: "main",
-    partials: {},
-    data: {}
+    output: `${name}.html`,
+    layout: "templates/main.html",
+    partials: []
   };
-  const updatedConfig = util.getConfig();
-  updatedConfig.pages[name] = name;
-
+  config.pages.push(`${name}.json`);
   fse
     .pathExists(newPage)
     .then(exists => {
       if (exists) throw `${newPage} already exists`;
     })
     .then(fse.writeFile(newPage, JSON.stringify(template, null, 4)))
-    .then(util.updateConfig(updatedConfig))
+    .then(util.updateConfig(config))
     .then(res => {
       console.log(chalk.green(name, "was created!"));
       console.log(`run: statical compile`);
     })
     .catch(err => {
-      console.warn(chalk.red(err));
+      console.warn(chalk.magenta(err));
       process.exit(1);
     });
 };
 
 module.exports = {
-  site: function (kwargs) {
+  site: function(kwargs) {
     if (kwargs.help) return this.printCommandGuide("create");
     if (kwargs.site !== null) return createSite(kwargs.site);
   },
-  page: function (kwargs) {
+  page: function(kwargs) {
     if (kwargs.help) return this.printCommandGuide("create");
-    if (kwargs.page !== null) return createPage(kwargs.page);
+    if (kwargs.page === null || kwargs.page === true)
+      return console.warn(
+        chalk.magenta("Error"),
+        "--page name must be specified"
+      );
+    if (kwargs.page !== null) return createPage(kwargs.page, kwargs.dir);
   }
 };

@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "website": "mysite.com",
+  "build": "public",
+  "pages": ["home.json", "about.json"],
+  "data": {
+    "mainMenu": [
+      {
+        "label": "home",
+        "link": "./index.html"
+      },
+      {
+        "label": "about",
+        "link": "./about.html"
+      }
+    ]
+  }
+}

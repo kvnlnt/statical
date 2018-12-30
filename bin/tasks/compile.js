@@ -1,35 +1,25 @@
 const fse = require("fs-extra");
+const Handlebars = require("handlebars");
 const cheerio = require("cheerio");
 const util = require("../lib/util");
-const Handlebars = require("handlebars");
 const chalk = require("chalk");
-const glob = require("glob");
-const srcDir = `${process.cwd()}/src`;
-const includesDir = `${srcDir}/templates/partials/includes`;
-const files = glob.sync(`${includesDir}/**/*.*`);
+const srcDir = `${process.cwd()}`;
+const config = util.getConfig();
 
-files.forEach(i => {
-  const name = i.replace(includesDir + "/", "");
-  const src = fse.readFileSync(i, "utf-8");
-  Handlebars.registerPartial(name, src);
-});
-
-const insertPartialContents = async (template, partials) => {
-  for (const p in partials) {
-    const file = `${srcDir}/templates/partials/${partials[p]}.html`;
-    partials[p] = await util.readFile(file);
-    template(p).html(partials[p]);
+const compilePartials = async (template, partials, data = {}) => {
+  for (let i = 0; i < partials.length; i++) {
+    let partial = partials[i];
+    data = Object.assign(data, partial.data);
+    partial.source = await util.readFile(`${srcDir}/${partial.source}`);
+    let html = Handlebars.compile(partial.source)(data);
+    template(partial.element).html(html);
   }
   return template;
 };
 
 const concatData = async page => {
-  const globalDataExists = await util.fileExists(`${srcDir}/data/_global.json`);
-  const globalData = JSON.parse(
-    globalDataExists ? await util.readFile(`${srcDir}/data/_global.json`) : "{}"
-  );
   let data = {
-    ...globalData,
+    ...(config.data || {}),
     ...page.params
   };
   for (const f in page.data) {
@@ -40,22 +30,24 @@ const concatData = async page => {
   return data;
 };
 
-const compilePage = async (o, dir = "public") => {
+const compilePage = async (o, dir = config.build) => {
   const tsStart = process.hrtime();
+  const output = `${process.cwd()}/${dir}/${o.output}`;
+  const data = {
+    global: config.data
+  };
   return util
-    .readFile(`${srcDir}/templates/layouts/${o.layout}.html`)
+    .readFile(`${srcDir}/${o.layout}`)
     .then(t => cheerio.load(t, { decodeEntities: false }))
-    .then(t => insertPartialContents(t, o.partials))
+    .then(t => compilePartials(t, o.partials, data))
     .then(t => (o._template = t))
-    .then(x => concatData(o))
-    .then(d => (o._data = d))
-    .then(fse.ensureFile(`${process.cwd()}/${dir}/${o.file}`))
-    .then(x => Handlebars.compile(o._template.html())(o._data))
-    .then(s => util.writeFile(`${process.cwd()}/${dir}/${o.file}`, s))
+    .then(fse.ensureFile(output))
+    .then(x => Handlebars.compile(o._template.html())(data))
+    .then(x => util.writeFile(output, o._template.html()))
     .then(x => process.hrtime(tsStart))
     .then(x => {
       const tsEnd = chalk.grey(`${util.hrTimeToMil(x)}ms`);
-      console.info(chalk.green("compiled"), `${dir}/${o.file} ${tsEnd}`);
+      console.info(chalk.green("compiled"), `${dir}/${o.output} ${tsEnd}`);
     })
     .catch(util.onError);
 };
@@ -63,12 +55,10 @@ const compilePage = async (o, dir = "public") => {
 const compileSite = async (dir = "public") => {
   const tsStart = process.hrtime();
   await fse.ensureDir(`${process.cwd()}/${dir}`);
-  const config = util.getConfig();
-  for (let k in config.pages) {
-    const p = JSON.parse(
-      await util.readFile(`${srcDir}/pages/${config.pages[k]}.json`)
-    );
-    await compilePage(p, config.buildDir);
+  for (let i = 0; i < config.pages.length; i++) {
+    const page = config.pages[i];
+    const p = JSON.parse(await util.readFile(`${srcDir}/${page}`));
+    await compilePage(p);
   }
   const tsEnd = process.hrtime(tsStart);
   console.info(chalk.grey(`\u23F1 ${util.hrTimeToMil(tsEnd)}ms`));
@@ -77,14 +67,11 @@ const compileSite = async (dir = "public") => {
 module.exports = function(kwargs = {}) {
   if (kwargs.help) return this.printCommandGuide("compile");
   if (kwargs.site === false && kwargs.page === false) return compileSite();
-  if (kwargs.site) return compileSite(config.buildDir);
+  if (kwargs.site) return compileSite(config.build);
   if (kwargs.page) {
-    const config = util.getConfig();
-    const page = config.pages[kwargs.page];
+    const page = config.pages.filter(i => i === `${kwargs.page}.json`);
     if (!page) return util.onError(`Page "${kwargs.page}" not found`);
-    const p = JSON.parse(
-      fse.readFileSync(`${srcDir}/pages/${config.pages[kwargs.page]}.json`)
-    );
-    return compilePage(p, config.buildDir);
+    const p = JSON.parse(fse.readFileSync(`${srcDir}/${page}`));
+    return compilePage(p, config.build);
   }
 };

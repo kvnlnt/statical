@@ -4,12 +4,12 @@ const chalk = require("chalk");
 const fse = require("fs-extra");
 
 const onError = err => {
-  console.warn(`${chalk.red("ERROR")} ${err}`);
+  console.warn(`${chalk.magenta("ERROR")} ${err}`);
   process.exit(1);
 };
 
 const getConfig = () => {
-  const configFile = `${process.cwd()}/src/statical.json`;
+  const configFile = `${process.cwd()}/.statical.json`;
   if (!fse.existsSync(configFile))
     return onError("This isn't a Statical Site.");
   const config = fse.readFileSync(configFile, "utf-8");
@@ -18,13 +18,11 @@ const getConfig = () => {
 };
 
 const getPageConfig = p => {
-  return JSON.parse(
-    fs.readFileSync(`${process.cwd()}/src/pages/${p}.json`, "utf-8")
-  );
+  return JSON.parse(fs.readFileSync(`${process.cwd()}/${p}`, "utf-8"));
 };
 
 const updateConfig = obj => {
-  const configFile = `${process.cwd()}/src/statical.json`;
+  const configFile = `${process.cwd()}/.statical.json`;
   if (!fse.existsSync(configFile))
     return onError("This isn't a Statical Site.");
   fse.writeFileSync(configFile, JSON.stringify(obj, null, 4));
