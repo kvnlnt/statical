@@ -12,7 +12,7 @@ const compilePartials = async (template, partials, data = {}) => {
     data = Object.assign(data, partial.data);
     partial.source = await util.readFile(`${srcDir}/${partial.source}`);
     let html = Handlebars.compile(partial.source)(data);
-    template(partial.element).html(html);
+    template(partial.element).append(html);
   }
   return template;
 };
