@@ -38,10 +38,10 @@ const compilePage = async (o, dir = config.build) => {
   };
   return util
     .readFile(`${srcDir}/${o.layout}`)
+    .then(fse.ensureFile(output))
     .then(t => cheerio.load(t, { decodeEntities: false }))
     .then(t => compilePartials(t, o.partials, data))
     .then(t => (o._template = t))
-    .then(fse.ensureFile(output))
     .then(x => Handlebars.compile(o._template.html())(data))
     .then(x => util.writeFile(output, o._template.html()))
     .then(x => process.hrtime(tsStart))
