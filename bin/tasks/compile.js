@@ -9,7 +9,7 @@ const config = util.getConfig();
 const compilePartials = async (template, partials, data = {}) => {
   for (let i = 0; i < partials.length; i++) {
     let partial = partials[i];
-    data = Object.assign(data, partial.data);
+    data = { ...data, ...partial.data };
     partial.source = await util.readFile(`${srcDir}/${partial.source}`);
     let html = Handlebars.compile(partial.source)(data);
     template(partial.element).append(html);
@@ -41,9 +41,8 @@ const compilePage = async (o, dir = config.build) => {
     .then(fse.ensureFile(output))
     .then(t => cheerio.load(t, { decodeEntities: false }))
     .then(t => compilePartials(t, o.partials, data))
-    .then(t => (o._template = t))
-    .then(x => Handlebars.compile(o._template.html())(data))
-    .then(x => util.writeFile(output, o._template.html()))
+    .then(t => (o._template = Handlebars.compile(t.html())(data)))
+    .then(x => util.writeFile(output, o._template))
     .then(x => process.hrtime(tsStart))
     .then(x => {
       const tsEnd = chalk.grey(`${util.hrTimeToMil(x)}ms`);
